@@ -1,6 +1,7 @@
 package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Account;
+import com.shoppingcart.entity.Order;
 import com.shoppingcart.entity.ShippingAddress;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.ShippingAddressRepository;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -24,7 +26,8 @@ public class CheckoutController {
 
     @PostMapping("/checkout/{accountId}/{shippingAddressId}")
     public ResponseEntity<?> checkout(@PathVariable("accountId") Integer accountId,
-                                      @PathVariable("shippingAddressId") Integer shippingAddressId){
+                                      @PathVariable("shippingAddressId") Integer shippingAddressId,
+                                      @RequestBody Order order){
         Optional<Account> accountOptional=accountRepository.findById(accountId);
         Optional<ShippingAddress> shippingAddressOptional = shippingAddressRepository.findById(shippingAddressId);
         if(!shippingAddressOptional.isPresent()){
@@ -45,6 +48,8 @@ public class CheckoutController {
                 return new ResponseEntity<>("Card is Expired",HttpStatus.EXPECTATION_FAILED);
             }
             shippingAddressRepository.save(shippingAddress);
+            order.setOrderId(java.util.UUID.randomUUID().toString());
+            return new ResponseEntity<>(order.getOrderId(),HttpStatus.OK);
         }
         return new ResponseEntity<>("Account Not Found With Id "+accountId, HttpStatus.NOT_FOUND);
     }
