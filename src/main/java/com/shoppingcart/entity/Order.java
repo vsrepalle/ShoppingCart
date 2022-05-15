@@ -9,6 +9,19 @@ public class Order {
 	@Id
 	private String orderId;
 
+	public Order(String orderId, String displayName, String category, String sellerName, float price, int quantity, float totalPrice, Date orderedDate, String orderStatus) {
+		this.orderId = orderId;
+		this.displayName = displayName;
+		this.category = category;
+		this.sellerName = sellerName;
+		this.price = price;
+		this.quantity = quantity;
+		this.totalPrice = totalPrice;
+		this.orderedDate = orderedDate;
+		this.orderStatus = orderStatus;
+	}
+
+
 	public String getOrderId() {
 		return orderId;
 	}

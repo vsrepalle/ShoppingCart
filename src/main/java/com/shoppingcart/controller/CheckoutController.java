@@ -23,11 +23,16 @@ public class CheckoutController {
     @Autowired
     private ShippingAddressRepository shippingAddressRepository;
 
-    @PostMapping("/checkout/{accountId}")
-    public ResponseEntity<?> checkout(@RequestBody ShippingAddress shippingAddress
-            ,@PathVariable("accountId") Integer accountId){
+    @PostMapping("/checkout/{accountId}/{shippingAddressId}")
+    public ResponseEntity<?> checkout(@PathVariable("accountId") Integer accountId,
+                                      @PathVariable("shippingAddressId") Integer shippingAddressId){
         Optional<Account> accountOptional=accountRepository.findById(accountId);
-        if(accountOptional.isPresent()){
+        Optional<ShippingAddress> shippingAddressOptional = shippingAddressRepository.findById(shippingAddressId);
+        if(!shippingAddressOptional.isPresent()){
+            return new ResponseEntity<>("Shipping Address not found with id "+shippingAddressId,HttpStatus.NOT_FOUND);
+        }
+        else if(accountOptional.isPresent()){
+            ShippingAddress shippingAddress=shippingAddressOptional.get();
             if(!shippingAddress.getCardNumber().equals("^([0-9]{4}[- ]?){3}[0-9]{4}$")){
                 return new ResponseEntity<>("Card Number is not valid",HttpStatus.BAD_REQUEST);
             }
@@ -37,7 +42,6 @@ public class CheckoutController {
             if(shippingAddress.getExpiryMonth() > 12){
                 return new ResponseEntity<>("Expiry Month Is Greater Than 12",HttpStatus.BAD_REQUEST);
             }
-
             if(isCardExpired(shippingAddress)){
                 return new ResponseEntity<>("Card is Expired",HttpStatus.EXPECTATION_FAILED);
             }
