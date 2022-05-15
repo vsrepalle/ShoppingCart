@@ -1,6 +1,8 @@
 package com.shoppingcart.entity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 @Entity
 @Table(name= "order_new")
