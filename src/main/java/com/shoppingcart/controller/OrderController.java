@@ -29,14 +29,12 @@ public class OrderController {
 		Optional<Account> account = accountRepository.findById(accountId);
 		if (account.isPresent()) {
 			Account accountObjInDB = account.get();
-
 			List<Order> orderList = accountObjInDB.getOrdersList();
-
+			orderInReq.setOrderId(java.util.UUID.randomUUID().toString());
 			orderList.add(orderInReq);
 			accountObjInDB.setOrdersList(orderList);
 			accountRepository.save(accountObjInDB);
 			return new ResponseEntity<>("Order Added Successfully", HttpStatus.CREATED);
-
 		}
 		return new ResponseEntity<>("Account Not Found With Id " + accountId, HttpStatus.NOT_FOUND);
 
@@ -64,10 +62,20 @@ public class OrderController {
 		}
 		return new ResponseEntity<>("No account found with accountId--->" + accountId, HttpStatus.NOT_FOUND);
 	}
+	@GetMapping(value="/account/listOrders/{accountId}")
+	public ResponseEntity<?> listOfOrders(@PathVariable("accountId") Integer accountId){
+		Optional<Account> account = accountRepository.findById(accountId);
+		if(account.isPresent()) {
+			if(account.get().getOrdersList().isEmpty()) {
+				return new ResponseEntity<>("Orders are empty",HttpStatus.OK);
+			}
+			return new ResponseEntity<>(account.get().getOrdersList(),HttpStatus.FOUND);
+		}
+		return new ResponseEntity<>("Account Not Found With Id "+accountId,HttpStatus.NOT_FOUND);
+	}
 
-	@GetMapping(value = "/account/returnOrder/{accountId}/{orderId}")
-	public ResponseEntity<?> returnOrder(@PathVariable("accountId") Integer accountId,
-			@PathVariable("orderId") Integer orderId) {
+	@GetMapping(value = "/account/returnOrder/{orderId}")
+	public ResponseEntity<?> returnOrder(@PathVariable("orderId") String orderId) {
 
 		Optional<Order> orderInDB = orderRepository.findById(orderId);
 		if (orderInDB.isPresent()) {
@@ -94,7 +102,7 @@ public class OrderController {
 	}
 
 	@DeleteMapping(value = "/account/cancelOrder/{orderId}/{accountId}")
-	public ResponseEntity<?> cancelOrder(@PathVariable("orderId") Integer orderId,@PathVariable("accountId") Integer accountId) {
+	public ResponseEntity<?> cancelOrder(@PathVariable("orderId") String orderId,@PathVariable("accountId") Integer accountId) {
 
 		Optional<Order> orderInDB = orderRepository.findById(orderId);
 		if (orderInDB.isPresent()) {
@@ -109,17 +117,5 @@ public class OrderController {
 		}
 		return new ResponseEntity<>("Order Not Found With Id " + orderId, HttpStatus.NOT_FOUND);
 
-	}
-	
-	@GetMapping(value="/account/listOrders/{accountId}")
-	public ResponseEntity<?> listOfOrders(@PathVariable("accountId") Integer accountId){
-	    Optional<Account> account = accountRepository.findById(accountId);
-	    if(account.isPresent()) {
-	    	if(account.get().getOrdersList().isEmpty()) {
-	    		return new ResponseEntity<>("Orders are empty",HttpStatus.OK);
-	    	}
-	    	return new ResponseEntity<>(account.get().getOrdersList(),HttpStatus.FOUND);
-	    }
-	    return new ResponseEntity<>("Account Not Found With Id "+accountId,HttpStatus.NOT_FOUND);
 	}
 }

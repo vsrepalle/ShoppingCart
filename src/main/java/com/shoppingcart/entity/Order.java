@@ -5,15 +5,15 @@ import java.util.Date;
 @Entity
 @Table(name= "order_new")
 public class Order {
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int orderId;
-	
-	public Integer getOrderId() {
+	private String orderId;
+
+	public String getOrderId() {
 		return orderId;
 	}
 
-	public void setOrderId(int orderId) {
+	public void setOrderId(String orderId) {
 		this.orderId = orderId;
 	}
 
@@ -49,32 +49,36 @@ public class Order {
 		this.price = price;
 	}
 
-	public int getQuantiy() {
-		return quantiy;
-	}
 
-	public void setQuantiy(int quantiy) {
-		this.quantiy = quantiy;
-	}
 
 	public float getTotalPrice() {
 		return totalPrice;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
 	public void setTotalPrice(float totalPrice) {
 		this.totalPrice = totalPrice;
 	}
 
-	public Date getOrderedDate() {
-		return OrderedDate;
-	}
 
-	public void setOrderedDate(Date orderedDate) {
-		OrderedDate = orderedDate;
-	}
 
 	public String getOrderStatus() {
 		return orderStatus;
+	}
+
+	public Date getOrderedDate() {
+		return orderedDate;
+	}
+
+	public void setOrderedDate(Date orderedDate) {
+		this.orderedDate = orderedDate;
 	}
 
 	public void setOrderStatus(String orderStatus) {
@@ -89,12 +93,12 @@ public class Order {
 	
 	private float price;
 	
-	private int quantiy;
+	private int quantity;
 	
 	private float totalPrice;
 	
-	private Date OrderedDate;
-	
+	private Date orderedDate;
+
 	private String orderStatus;
 	
 	

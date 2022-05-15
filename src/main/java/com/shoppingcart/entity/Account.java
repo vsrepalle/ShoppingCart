@@ -11,6 +11,7 @@ public class Account {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	//@Pattern(regexp = "[a-zA-Z][a-zA-Z ]*")
+	@Column(nullable = false)
 	private String name;
 
 	public String getName() {
@@ -58,13 +59,14 @@ public class Account {
 		this.wishList = wishList;
 	}
 
-	// Minimum eight characters, at least one uppercase letter, one lowercase
-	// letter, one number and one special character:
+	//Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:
 	@Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
-			,message="Password should contain one special character,one number,8 characters,one capital letter")
+			,message="Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:")
+	@Column(nullable = false)
 	private String password;
+	@Column(nullable = false)
 	private String confirmPassword;
-	@Column(unique=true , nullable=false)
+	@Column(unique=true,nullable=false)
 	private String email;
 	
 	@OneToMany(cascade = CascadeType.ALL)

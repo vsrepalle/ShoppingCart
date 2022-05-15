@@ -26,7 +26,7 @@ public interface ShoppingCartService {
 	 * Cart related 
 	 * 
 	 */
-	List<Item> getProductsInCart(int cartId) throws InternalErrorException;
+	List<Item> getProductsInCart(int cartId);
 	Cart addProductInCart(int cartId, int productId);
 	Cart updateProductQuantityInCart(int cartId, int productId,int quantity) throws ProductNotPresentInCartException, InvalidQuantityException;
 	Cart removeProductFromCart(int cartId, int productId) throws ProductNotPresentInCartException; 

@@ -37,7 +37,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		return userRepository.findById(userId).get();
 	}
 
-	@Transactional(rollbackFor = InternalErrorException.class)
+
 	@Override
 	public User addUser(User user) {
 		return userRepository.save(user);
@@ -61,7 +61,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	}
 
 	@Override
-	public List<Item> getProductsInCart(int cartId) throws InternalErrorException {
+	public List<Item> getProductsInCart(int cartId) {
 		Map<Integer,Integer> productQuantityMap = cartRepository.findById(cartId).get().getProductQuantityMap();
 		List<Item> itemList = new ArrayList<>();
 		for (Map.Entry<Integer,Integer> entry : productQuantityMap.entrySet()) {
@@ -89,7 +89,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		}
 	}
 
-	@Transactional(rollbackFor = InternalErrorException.class)
+
 	@Override
 	public Cart addProductInCart(int cartId, int productId) {
 		Cart cart = cartRepository.findById(cartId).get();
@@ -104,7 +104,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		return cartRepository.save(cart);
 	}
 
-	@Transactional(rollbackFor = InternalErrorException.class)
+
 	@Override
 	public Cart updateProductQuantityInCart(int cartId, int productId, int quantity)
 			throws ProductNotPresentInCartException, InvalidQuantityException {
@@ -129,7 +129,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		}
 	}
 
-	@Transactional(rollbackFor = InternalErrorException.class)
+
 	@Override
 	public Cart removeProductFromCart(int cartId, int productId) throws ProductNotPresentInCartException {
 		Cart cart = cartRepository.findById(cartId).get();
@@ -140,7 +140,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		return cartRepository.save(cart);
 	}
 
-	@Transactional(rollbackFor = InternalErrorException.class)
+
 	@Override
 	public Cart removeAllProductsFromCart(int cartId) {
 		Cart cart = cartRepository.findById(cartId).get();
