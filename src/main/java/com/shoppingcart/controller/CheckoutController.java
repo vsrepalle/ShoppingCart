@@ -1,8 +1,6 @@
 package com.shoppingcart.controller;
 
 import com.shoppingcart.dto.CheckoutDTO;
-import com.shoppingcart.entity.Account;
-import com.shoppingcart.entity.Order;
 import com.shoppingcart.entity.ShippingAddress;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.ShippingAddressRepository;
@@ -61,12 +59,8 @@ public class CheckoutController {
         if(shippingAddress.getExpiryYear()>date.getYear()){
             return false;
         }
-        else if(shippingAddress.getExpiryYear()<date.getYear()){
-            return true;
-        }
-        else{
-            return shippingAddress.getExpiryMonth() <= date.getMonthValue() &&
+            return shippingAddress.getExpiryYear()<date.getYear() ||
+                    shippingAddress.getExpiryMonth() <= date.getMonthValue() &&
                     shippingAddress.getExpiryMonth() != date.getMonthValue();
-        }
     }
 }
