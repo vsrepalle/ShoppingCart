@@ -56,7 +56,7 @@ public class CheckoutController {
         }
         return validateAccount;
     }
-    private boolean isCardExpired(ShippingAddress shippingAddress){
+    private static boolean isCardExpired(ShippingAddress shippingAddress){
         LocalDate date = LocalDate.now();
         if(shippingAddress.getExpiryYear()>date.getYear()){
             return false;
