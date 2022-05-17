@@ -10,7 +10,6 @@ public class Account {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	//@Pattern(regexp = "[a-zA-Z][a-zA-Z ]*")
 	@Column(nullable = false)
 	private String name;
 

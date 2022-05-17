@@ -1,7 +1,9 @@
 package com.shoppingcart.controller;
 
-import com.shoppingcart.entity.Account;
-import com.shoppingcart.repository.AccountRepository;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.shoppingcart.entity.Account;
+import com.shoppingcart.repository.AccountRepository;
 
 @RestController
 @RequestMapping(value = "users")
@@ -28,7 +28,7 @@ public class RegisterController {
 	}
 
 	@PostMapping(value = "/account")
-	public ResponseEntity<?> register(@Valid @RequestBody Account account) {
+	public ResponseEntity<?> register(@RequestBody Account account) {
 		if (null != account.getName() && !isValidUsername(account.getName())) {
 			return new ResponseEntity<>("Name Shouldn't contain anything other than alphabets", HttpStatus.BAD_REQUEST);
 		}

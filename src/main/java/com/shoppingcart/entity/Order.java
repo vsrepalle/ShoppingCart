@@ -22,7 +22,9 @@ public class Order {
 		this.orderedDate = orderedDate;
 		this.orderStatus = orderStatus;
 	}
-
+    public Order() {
+    	
+    }
 
 	public String getOrderId() {
 		return orderId;
