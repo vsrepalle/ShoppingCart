@@ -2,6 +2,8 @@ package com.shoppingcart.controller;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,11 +37,11 @@ public class CheckoutController {
         ResponseEntity<String> validateAccount = accountUtil.validateAccount(checkoutDTO.getAccount());
         if(validateAccount.getStatusCode().equals(HttpStatus.OK)) {
             ShippingAddress shippingAddress = shippingAddressOptional.get();
-            if (!shippingAddress.getCardNumber()
-            		.equals("/^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\\d{3})\\d{11})$/")) {
+            if (shippingAddress.getCardNumber()
+            		.length()==16&&onlyDigits(shippingAddress.getCardNumber())) {
                 return new ResponseEntity<>("Card Number is not valid", HttpStatus.BAD_REQUEST);
             }
-            if (!(String.valueOf(shippingAddress.getCvv()).equals("^[0-9]{3, 4}$"))) {
+            if (String.valueOf(shippingAddress.getCvv()).length()==3&&onlyDigits(String.valueOf(shippingAddress.getCvv()))) {
                 return new ResponseEntity<>("Cvv is not valid", HttpStatus.BAD_REQUEST);
             }
             if (shippingAddress.getExpiryMonth() > 12) {
@@ -62,5 +64,16 @@ public class CheckoutController {
             return shippingAddress.getExpiryYear()<date.getYear() ||
                     shippingAddress.getExpiryMonth() <= date.getMonthValue() &&
                     shippingAddress.getExpiryMonth() != date.getMonthValue();
+    }
+    public static boolean
+    onlyDigits(String str)
+    {
+        String regex = "[0-9]+";
+        Pattern p = Pattern.compile(regex);
+        if (str == null) {
+            return false;
+        }
+        Matcher m = p.matcher(str);  
+        return m.matches();
     }
 }
