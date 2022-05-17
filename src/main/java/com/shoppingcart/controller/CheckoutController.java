@@ -35,7 +35,8 @@ public class CheckoutController {
         ResponseEntity<String> validateAccount = accountUtil.validateAccount(checkoutDTO.getAccount());
         if(validateAccount.getStatusCode().equals(HttpStatus.OK)) {
             ShippingAddress shippingAddress = shippingAddressOptional.get();
-            if (!shippingAddress.getCardNumber().equals("^([0-9]{4}[- ]?){3}[0-9]{4}$")) {
+            if (!shippingAddress.getCardNumber()
+            		.equals("/^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\\d{3})\\d{11})$/")) {
                 return new ResponseEntity<>("Card Number is not valid", HttpStatus.BAD_REQUEST);
             }
             if (!(String.valueOf(shippingAddress.getCvv()).equals("^[0-9]{3, 4}$"))) {
