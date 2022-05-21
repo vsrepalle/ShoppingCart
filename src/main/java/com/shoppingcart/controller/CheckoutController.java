@@ -1,7 +1,11 @@
 package com.shoppingcart.controller;
 
-import java.util.Optional;
-
+import com.shoppingcart.dto.CheckoutDTO;
+import com.shoppingcart.entity.Order;
+import com.shoppingcart.entity.ShippingAddress;
+import com.shoppingcart.repository.OrderRepository;
+import com.shoppingcart.repository.ShippingAddressRepository;
+import com.shoppingcart.utils.AccountUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shoppingcart.dto.CheckoutDTO;
-import com.shoppingcart.entity.Order;
-import com.shoppingcart.entity.ShippingAddress;
-import com.shoppingcart.repository.OrderRepository;
-import com.shoppingcart.repository.ShippingAddressRepository;
-import com.shoppingcart.utils.AccountUtil;
+import java.util.Optional;
 
 @RestController
 public class CheckoutController {

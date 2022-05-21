@@ -1,32 +1,28 @@
 package com.shoppingcart.controller;
 
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.shoppingcart.entity.Account;
+import com.shoppingcart.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shoppingcart.entity.Account;
-import com.shoppingcart.repository.AccountRepository;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping(value = "users")
 public class RegisterController {
 
-
+    @Autowired
 	private AccountRepository accountRepository;
-
 	@Autowired
-	public RegisterController(AccountRepository accountRepository) {
-		this.accountRepository = accountRepository;
-	}
-
+	private PasswordEncoder passwordEncoder;
 	@PostMapping(value = "/account")
 	public ResponseEntity<?> register(@RequestBody Account account) {
 		if (null != account.getName() && !isValidUsername(account.getName())) {
@@ -50,6 +46,7 @@ public class RegisterController {
 				if (account.getWishList() != null) {
 					return new ResponseEntity<>("Only Registered Account can add wishlist", HttpStatus.BAD_REQUEST);
 				} else {
+					account.setPassword(passwordEncoder.encode(account.getPassword()));
 					accountRepository.save(account);
 					return new ResponseEntity<>("Account Registered", HttpStatus.CREATED);
 				}

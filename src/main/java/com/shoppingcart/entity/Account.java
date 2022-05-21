@@ -70,6 +70,16 @@ public class Account {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Order> ordersList;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Role role;
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
 
 	public List<Order> getOrdersList() {
 		return ordersList;
@@ -79,6 +89,7 @@ public class Account {
 		this.ordersList = ordersList;
 	}
 
-	
+	@OneToOne(cascade = CascadeType.ALL)
+	private ShippingAddress shippingAddress;
 
 }

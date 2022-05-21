@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "users")
@@ -60,7 +62,7 @@ public class OrderController {
 				return new ResponseEntity<>(filteredOrders, HttpStatus.FOUND);
 			}
 		}
-		return new ResponseEntity<>("No account found with accountId--->" + accountId, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>("No account found with Id-->" + accountId, HttpStatus.NOT_FOUND);
 	}
 	@GetMapping(value="/account/listOrders/{accountId}")
 	public ResponseEntity<?> listOfOrders(@PathVariable("accountId") Integer accountId){
@@ -101,18 +103,14 @@ public class OrderController {
 
 	}
 
-	@DeleteMapping(value = "/account/cancelOrder/{orderId}/{accountId}")
-	public ResponseEntity<?> cancelOrder(@PathVariable("orderId") String orderId,@PathVariable("accountId") Integer accountId) {
+	@DeleteMapping(value = "/account/cancelOrder/{orderId}")
+	public ResponseEntity<?> cancelOrder(@PathVariable("orderId") String orderId) {
 
 		Optional<Order> orderInDB = orderRepository.findById(orderId);
 		if (orderInDB.isPresent()) {
-			Optional<Account> account = accountRepository.findById(accountId);
-            Account accountFromDB = account.get();
-			List<Order> orders = accountFromDB.getOrdersList();
-			orders=orders.stream().filter(order -> !Objects.equals(order.getOrderId(), orderId)).collect(Collectors.toList());
-			accountFromDB.setOrdersList(orders);
-			accountRepository.save(accountFromDB);
-			orderRepository.deleteById(orderId);
+			Order order = orderInDB.get();
+			order.setOrderStatus("CANCELLED");
+			orderRepository.save(order);
 			return new ResponseEntity<>("The order is Cancelled !!", HttpStatus.ACCEPTED);
 		}
 		return new ResponseEntity<>("Order Not Found With Id " + orderId, HttpStatus.NOT_FOUND);
