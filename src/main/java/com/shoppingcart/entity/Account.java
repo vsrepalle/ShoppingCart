@@ -70,7 +70,7 @@ public class Account {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Order> ordersList;
-	@OneToOne(cascade = CascadeType.ALL)
+
 	private Role role;
 
 	public Role getRole() {

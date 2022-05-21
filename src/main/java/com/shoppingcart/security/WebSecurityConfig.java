@@ -36,6 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/product/add","/product/update/{productId}","/product/delete/{productId}")
                 .hasAnyRole("ADMIN");
+        http.authorizeRequests().antMatchers("/users/{accountId}/cart/**").hasAnyRole("USER");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
     }
