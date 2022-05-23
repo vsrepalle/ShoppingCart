@@ -1,6 +1,8 @@
 package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Product;
+import com.shoppingcart.entity.ProductStatus;
+import com.shoppingcart.entity.Rating;
 import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,16 @@ public class ProductController {
 	}
 	@PostMapping("product/add")
 	public ResponseEntity<?> addProduct(Product product){
+		int stockQty = product.getStockQty();
+
+			if(stockQty >0){
+				product.setStatus(ProductStatus.InStock);
+			}
+			else{
+				product.setStatus(ProductStatus.NoStock);
+			}
+
+
 		productRepository.save(product);
 		return new ResponseEntity<>("",HttpStatus.CREATED);
 	}
@@ -56,6 +68,8 @@ public class ProductController {
 		}
 	}
 
+
+
 	@GetMapping(value = "products/searchByCategory")
 	public ResponseEntity<?> searchProductByCategory(@RequestParam String category) {
 		try {
@@ -64,6 +78,26 @@ public class ProductController {
 		} catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
+	}
+
+	@PutMapping("product/rate/{productId}/{rating}")
+	public ResponseEntity<?> rateProduct(@PathVariable("productId") Integer productId, @RequestBody Rating rating){
+		Optional<Product> productOptional = productRepository.findById(productId);
+		if(productOptional.isPresent()){
+			Product product=productOptional.get();
+
+			Rating ratingInDB = product.getRating();
+			ratingInDB.setRating(rating.getRating());
+			ratingInDB.setProductId(rating.getProductId());
+			ratingInDB.setUserId(rating.getUserId());
+			ratingInDB.setRemarks(rating.getRemarks());
+
+			product.setRating(rating);
+
+			productRepository.save(product);
+			return new ResponseEntity<>("Product rating Updated Successfully",HttpStatus.OK);
+		}
+		return new ResponseEntity<>("Product Not Found With Id "+productId,HttpStatus.OK);
 	}
 
 }

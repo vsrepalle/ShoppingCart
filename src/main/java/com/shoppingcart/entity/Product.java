@@ -3,6 +3,7 @@ package com.shoppingcart.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Product {
@@ -16,6 +17,40 @@ public class Product {
 	private float price;
 	@Column
 	private String category;
+
+	public int getStockQty() {
+		return stockQty;
+	}
+
+	public void setStockQty(int stockQty) {
+		this.stockQty = stockQty;
+	}
+
+	public Rating getRating() {
+		return rating;
+	}
+
+	public void setRating(Rating rating) {
+		this.rating = rating;
+	}
+
+	@Column
+	@OneToOne
+	private Rating rating;
+
+	@Column
+	private int stockQty;
+
+	public ProductStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ProductStatus status) {
+		this.status = status;
+	}
+
+	@Column
+	private ProductStatus status;
 
 	public Product(int productId, String prodName, float price, String category) {
 		this.productId = productId;

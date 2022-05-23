@@ -33,13 +33,14 @@ public class LoginController {
 		}
 
 		else {
-			Optional<Account> accountExists = accountRepository.findByName(account.getName());
+			Optional<Account> accountExists = accountRepository.findByEmail(account.getEmail());
 
 			if(accountExists.isPresent()) {
-				if(account.getPassword() != null && passwordEncoder.encode(account.getPassword()).equals(accountExists.get().getPassword())
+				if(account.getPassword() != null && passwordEncoder.matches(account.getPassword(),accountExists.get().getPassword())
 						&& account.getPassword().equals(account.getConfirmPassword())) {
 					return new ResponseEntity<>("User Logged In!", HttpStatus.OK);
 				}
+
 			}
 
 			else {

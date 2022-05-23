@@ -92,4 +92,15 @@ public class Account {
 	@OneToOne(cascade = CascadeType.ALL)
 	private ShippingAddress shippingAddress;
 
+	public List<Order> getHistoryOfOrders() {
+		return historyOfOrders;
+	}
+
+	public void setHistoryOfOrders(List<Order> historyOfOrders) {
+		this.historyOfOrders = historyOfOrders;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Order> historyOfOrders;
+
 }

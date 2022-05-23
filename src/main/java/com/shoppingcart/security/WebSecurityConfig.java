@@ -33,12 +33,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/product/add","/product/update/{productId}","/product/delete/{productId}")
-                .hasAnyRole("ADMIN");
-        http.authorizeRequests().antMatchers("/users/{accountId}/cart/**").hasAnyRole("USER");
+        http.cors().disable();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
+        http.authorizeRequests()
+                .antMatchers("/product/add","/product/update/{productId}","/product/delete/{productId}")
+                .hasAuthority("ADMIN");
+        http.authorizeRequests().antMatchers("/users/{accountId}/cart").hasAuthority("USER");
+        http.authorizeRequests().antMatchers("/users/account","/account/login").permitAll();
     }
 
 }

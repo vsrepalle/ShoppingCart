@@ -1,9 +1,11 @@
 package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Account;
+import com.shoppingcart.entity.Cart;
 import com.shoppingcart.entity.Order;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.OrderRepository;
+import com.shoppingcart.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ public class OrderController {
 	private AccountRepository accountRepository;
 	@Autowired
 	private OrderRepository orderRepository;
+	@Autowired
+	ShoppingCartService shoppingCartService;
 
 	@PostMapping(value = "/account/addOrder/{accountId}")
 	public ResponseEntity<?> addOrder(@PathVariable("accountId") Integer accountId,
@@ -35,11 +39,29 @@ public class OrderController {
 			orderInReq.setOrderId(java.util.UUID.randomUUID().toString());
 			orderList.add(orderInReq);
 			accountObjInDB.setOrdersList(orderList);
+			addToHistoryOfOrders(orderInReq, accountObjInDB);
 			accountRepository.save(accountObjInDB);
-			return new ResponseEntity<>("Order Added Successfully", HttpStatus.CREATED);
+			// TODO Need to check if products are deleted from Cart.
+
+			shoppingCartService.removeAllProductsFromCart(accountId);
+
+			return new ResponseEntity<>("Order Added Successfully and all products are removed from Cart", HttpStatus.CREATED);
 		}
 		return new ResponseEntity<>("Account Not Found With Id " + accountId, HttpStatus.NOT_FOUND);
 
+	}
+
+	private void addToHistoryOfOrders(Order orderInReq, Account accountObjInDB) {
+		// TODO Need to check if Order is added to History Of Orders.
+		// Adding the Order to History Of Orders.
+		if(accountObjInDB.getHistoryOfOrders() != null){
+			accountObjInDB.getHistoryOfOrders().add(orderInReq);
+		}
+		else{
+			List<Order> historyOrderList = new ArrayList<>();
+			historyOrderList.add(orderInReq);
+			accountObjInDB.setHistoryOfOrders(historyOrderList);
+		}
 	}
 
 	@GetMapping(value = "/account/filterOrdersByStatus/{accountId}/{status}")
