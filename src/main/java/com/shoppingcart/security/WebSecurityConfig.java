@@ -36,11 +36,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().disable();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests()
+/*        http.authorizeRequests()
                 .antMatchers("/product/add","/product/update/{productId}","/product/delete/{productId}")
-                .hasAuthority("ADMIN");
-        http.authorizeRequests().antMatchers("/users/{accountId}/cart").hasAuthority("USER");
-        http.authorizeRequests().antMatchers("/users/account","/account/login").permitAll();
+                .hasAuthority("ADMIN");*/
+/*        http.authorizeRequests().antMatchers("/users/{accountId}/cart").hasAuthority("USER");
+        http.authorizeRequests().antMatchers("/users/account","/account/login").permitAll();*/
+        http.authorizeRequests().antMatchers("/**").permitAll();
     }
 
 }
