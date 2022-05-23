@@ -80,7 +80,7 @@ public class ProductController {
 		}
 	}
 
-	@PutMapping("product/rate/{productId}/{rating}")
+	@PutMapping("product/rate/{productId}")
 	public ResponseEntity<?> rateProduct(@PathVariable("productId") Integer productId, @RequestBody Rating rating){
 		Optional<Product> productOptional = productRepository.findById(productId);
 		if(productOptional.isPresent()){

@@ -1,12 +1,13 @@
 package com.shoppingcart.entity;
 
-import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 public class Rating {
     @Id
-    private int id;
-    @Column
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int productId;
     private int userId;
 
     public int getUserId() {
@@ -40,11 +41,6 @@ public class Rating {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
-
-    @Column
-    private int productId;
-    @Column
     private Integer rating;
-    @Column
     private String remarks;
 }

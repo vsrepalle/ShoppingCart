@@ -1,7 +1,6 @@
 package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Account;
-import com.shoppingcart.entity.Cart;
 import com.shoppingcart.entity.Order;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.OrderRepository;
