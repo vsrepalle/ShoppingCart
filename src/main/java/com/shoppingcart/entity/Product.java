@@ -1,9 +1,6 @@
 package com.shoppingcart.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class Product {
@@ -34,7 +31,7 @@ public class Product {
 		this.rating = rating;
 	}
 
-	@Column
+
 	@OneToOne
 	private Rating rating;
 
@@ -49,7 +46,7 @@ public class Product {
 		this.status = status;
 	}
 
-	@Column
+	@Enumerated(EnumType.STRING)
 	private ProductStatus status;
 
 	public Product(int productId, String prodName, float price, String category) {
