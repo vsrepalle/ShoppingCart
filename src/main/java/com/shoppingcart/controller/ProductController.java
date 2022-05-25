@@ -85,14 +85,17 @@ public class ProductController {
 		Optional<Product> productOptional = productRepository.findById(productId);
 		if(productOptional.isPresent()){
 			Product product=productOptional.get();
-
 			Rating ratingInDB = product.getRating();
-			ratingInDB.setRating(rating.getRating());
-			ratingInDB.setProductId(rating.getProductId());
-			ratingInDB.setUserId(rating.getUserId());
-			ratingInDB.setRemarks(rating.getRemarks());
-
-			product.setRating(rating);
+			if(ratingInDB != null) {
+				ratingInDB.setRating(rating.getRating());
+				ratingInDB.setProductId(rating.getProductId());
+				ratingInDB.setUserId(rating.getUserId());
+				ratingInDB.setRemarks(rating.getRemarks());
+				product.setRating(ratingInDB);
+			}
+			else{
+				product.setRating(rating);
+			}
 
 			productRepository.save(product);
 			return new ResponseEntity<>("Product rating Updated Successfully",HttpStatus.OK);

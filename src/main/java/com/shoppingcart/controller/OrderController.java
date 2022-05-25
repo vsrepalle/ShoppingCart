@@ -50,6 +50,19 @@ public class OrderController {
 
 	}
 
+
+	@GetMapping(value = "/account/getAllHistoryOfRecords")
+	public ResponseEntity<?> getAllHistoryOfOrders(@PathVariable("/accountId") Integer accountId,
+									  @RequestBody @Valid Order orderInReq) {
+		Optional<Account> account = accountRepository.findById(accountId);
+		if (account.isPresent()) {
+			Account accountObjInDB = account.get();
+			List<Order> historyOfOrders = account.get().getHistoryOfOrders();
+			return new ResponseEntity<>( historyOfOrders , HttpStatus.FOUND);
+		}
+		return new ResponseEntity<>( "No History Of Orders found with --->" + accountId,HttpStatus.NOT_FOUND);
+	}
+
 	private void addToHistoryOfOrders(Order orderInReq, Account accountObjInDB) {
 		// TODO Need to check if Order is added to History Of Orders.
 		// Adding the Order to History Of Orders.
@@ -79,9 +92,8 @@ public class OrderController {
 			}
 			if (filteredOrders.isEmpty()) {
 				return new ResponseEntity<>("No Order found with Status--->" + status, HttpStatus.NOT_FOUND);
-			} else {
-				return new ResponseEntity<>(filteredOrders, HttpStatus.FOUND);
 			}
+				return new ResponseEntity<>(filteredOrders, HttpStatus.FOUND);
 		}
 		return new ResponseEntity<>("No account found with Id-->" + accountId, HttpStatus.NOT_FOUND);
 	}

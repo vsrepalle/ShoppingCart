@@ -32,7 +32,7 @@ public class Product {
 	}
 
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Rating rating;
 
 	@Column
