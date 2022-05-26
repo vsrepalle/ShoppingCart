@@ -5,6 +5,7 @@ import com.shoppingcart.entity.ProductStatus;
 import com.shoppingcart.entity.Rating;
 import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.service.ShoppingCartService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,36 +15,39 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Slf4j
 public class ProductController {
 
 	@Autowired
 	private ShoppingCartService shoppingCartService;
 	@Autowired
 	private ProductRepository productRepository;
-
-	// Display all products
 	@GetMapping(value = "products")
 	public ResponseEntity<?> getAllProducts() {
+		log.debug("Getting All the products");
 		List<Product> products=shoppingCartService.getAllProducts();
 		if(products.isEmpty()) {
+			log.debug("There is no products in the database");
 			return new ResponseEntity<>("No Products Available", HttpStatus.NOT_FOUND);
 		}
+		log.debug(products.size()==1?"1 product is in the database":products.size()+" products is in the database");
 			return new ResponseEntity<>(products, HttpStatus.FOUND);
 	}
 	@PostMapping("product/add")
 	public ResponseEntity<?> addProduct(Product product){
 		int stockQty = product.getStockQty();
-
 			if(stockQty >0){
+				log.debug("Product is in stock");
 				product.setStatus(ProductStatus.InStock);
 			}
 			else{
+				log.debug("Product is not in stock");
 				product.setStatus(ProductStatus.NoStock);
 			}
 
 
 		productRepository.save(product);
-		return new ResponseEntity<>("",HttpStatus.CREATED);
+		return new ResponseEntity<>("Product Added Successfully",HttpStatus.CREATED);
 	}
 	@PutMapping("/product/update/{productId}")
 	public ResponseEntity<?> updateProduct(@PathVariable("productId") Integer productId,@RequestBody Product productFromRequest){
@@ -54,16 +58,20 @@ public class ProductController {
 			product.setPrice(productFromRequest.getPrice());
 			product.setProdName(productFromRequest.getProdName());
 			productRepository.save(product);
+			log.debug("Product updated Successfully with id "+productId);
 			return new ResponseEntity<>("Product Updated Successfully",HttpStatus.OK);
 		}
+		log.error("Product Not Found With Id "+productId);
 		return new ResponseEntity<>("Product Not Found With Id "+productId,HttpStatus.OK);
 	}
 	@DeleteMapping("product/delete/{productId}")
 	public ResponseEntity<?> deleteProduct(@PathVariable("productId") Integer productId){
 		try{
 			productRepository.deleteById(productId);
+			log.debug("Deleted Product With Id "+productId);
 			return new ResponseEntity<>("Deleted Product With Id "+productId,HttpStatus.OK);
 		}catch (Exception e){
+			log.error("Product Not Found With Id "+productId,e);
 			return new ResponseEntity<>("Product Not Found With Id "+productId,HttpStatus.NOT_FOUND);
 		}
 	}
@@ -72,11 +80,14 @@ public class ProductController {
 
 	@GetMapping(value = "products/searchByCategory")
 	public ResponseEntity<?> searchProductByCategory(@RequestParam String category) {
+		log.debug("Searching Products with category "+category);
 		try {
 			List<Product> productList = shoppingCartService.searchProductsByCategory(category);
-			return new ResponseEntity<List<Product>>(productList, HttpStatus.FOUND);
+			log.debug("List is not empty when search with category");
+			return new ResponseEntity<>(productList, HttpStatus.FOUND);
 		} catch (Exception e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+			log.error(e.getMessage(),e);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -96,10 +107,11 @@ public class ProductController {
 			else{
 				product.setRating(rating);
 			}
-
+            log.debug("Product rating Updated Successfully with id "+productId);
 			productRepository.save(product);
 			return new ResponseEntity<>("Product rating Updated Successfully",HttpStatus.OK);
 		}
+		log.error("Product Not Found With Id "+productId);
 		return new ResponseEntity<>("Product Not Found With Id "+productId,HttpStatus.OK);
 	}
 

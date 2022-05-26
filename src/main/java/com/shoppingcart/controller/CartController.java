@@ -3,6 +3,7 @@ package com.shoppingcart.controller;
 import com.shoppingcart.entity.Cart;
 import com.shoppingcart.entity.Item;
 import com.shoppingcart.service.ShoppingCartService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "users")
+@Slf4j
 public class CartController {
 
 	@Autowired
@@ -19,10 +21,13 @@ public class CartController {
 
 	@GetMapping(value = "/{accountId}/cart")
 	public ResponseEntity<?> getCart(@PathVariable int accountId){
+		log.debug("Getting Cart with account id "+accountId);
 		try {
 			shoppingCartService.checkUser(accountId);
+			log.debug("Getting Cart is Success");
 			return new ResponseEntity<>(shoppingCartService.getCart(accountId), HttpStatus.FOUND);
 		} catch (Exception e) {
+			log.error(e.getMessage(),e);
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 		
@@ -30,11 +35,13 @@ public class CartController {
 
 	@GetMapping(value = "{accountId}/cart/products")
 	public ResponseEntity<?> getProductsInCart(@PathVariable("accountId") int accountId){
+		log.debug("Getting All the products with account id "+accountId);
 		try {
 			shoppingCartService.checkUser(accountId);
 			List<Item> itemList = shoppingCartService.getProductsInCart(accountId);
 			return new ResponseEntity<>(itemList, HttpStatus.OK);
 		} catch (Exception e) {
+			log.error(e.getMessage(),e);
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
 		}
 	}
@@ -49,6 +56,7 @@ public class CartController {
 			Cart cart = shoppingCartService.addProductInCart(accountId, productId);
 			return new ResponseEntity<>(cart, HttpStatus.ACCEPTED);
 		} catch(Exception e) {
+			log.error(e.getMessage(),e);
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
 		}
 	}

@@ -30,27 +30,27 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Override
 	public List<User> getAllUsers() {
-		log.info("Getting All Users");
+		log.debug("Getting All Users");
 		return userRepository.findAll();
 	}
 
 	@Override
 	public User getUser(int userId) {
-		log.info("Getting User with id {}",userId);
+		log.debug("Getting User with id {}",userId);
 		return userRepository.findById(userId).get();
 	}
 
 
 	@Override
 	public User addUser(User user) {
-		log.info("Saving User in Database");
+		log.debug("Saving User in Database");
 		return userRepository.save(user);
 	}
 
 
 	@Override
 	public void deleteUser(int userId) {
-		log.info("Deleting User with id {}",userId);
+		log.debug("Deleting User with id {}",userId);
 		try{
 			userRepository.deleteById(userId);
 		}catch(Exception e){
@@ -61,7 +61,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Override
 	public void checkUser(int userId) throws NoSuchUserException {
-		log.info("Checking User with id {}",userId);
+		log.debug("Checking User with id {}",userId);
 		if(!userRepository.findById(userId).isPresent()) {
 			throw new NoSuchUserException();
 		}
@@ -69,7 +69,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Override
 	public List<Item> getProductsInCart(int cartId) {
-		log.info("Getting Products in Cart By Cart Id {}",cartId);
+		log.debug("Getting Products in Cart By Cart Id {}",cartId);
 		Map<Integer,Integer> productQuantityMap = cartRepository.findById(cartId).get().getProductQuantityMap();
 		List<Item> itemList = new ArrayList<>();
 		for (Map.Entry<Integer,Integer> entry : productQuantityMap.entrySet()) {
@@ -100,7 +100,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Override
 	public Cart addProductInCart(int cartId, int productId) {
-		log.info("Adding Product with id {} in cart with id {}",productId,cartId);
+		log.debug("Adding Product with id {} in cart with id {}",productId,cartId);
 		Cart cart = cartRepository.findById(cartId).get();
 		try {
 			this.checkProductInCart(cart, productId);
