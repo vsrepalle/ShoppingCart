@@ -1,13 +1,16 @@
 package com.shoppingcart.service.impl;
 
+import com.shoppingcart.entity.Account;
 import com.shoppingcart.entity.Cart;
 import com.shoppingcart.entity.Item;
 import com.shoppingcart.entity.Product;
-import com.shoppingcart.entity.User;
-import com.shoppingcart.exception.*;
+import com.shoppingcart.exception.EmptyListOfProductsException;
+import com.shoppingcart.exception.InvalidQuantityException;
+import com.shoppingcart.exception.NoSuchProductException;
+import com.shoppingcart.exception.ProductNotPresentInCartException;
+import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.CartRepository;
 import com.shoppingcart.repository.ProductRepository;
-import com.shoppingcart.repository.UserRepository;
 import com.shoppingcart.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -24,48 +28,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	@Autowired
 	private ProductRepository productRepository;
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
 	private CartRepository cartRepository;
-
-	@Override
-	public List<User> getAllUsers() {
-		log.debug("Getting All Users");
-		return userRepository.findAll();
-	}
-
-	@Override
-	public User getUser(int userId) {
-		log.debug("Getting User with id {}",userId);
-		return userRepository.findById(userId).get();
-	}
-
-
-	@Override
-	public User addUser(User user) {
-		log.debug("Saving User in Database");
-		return userRepository.save(user);
-	}
-
-
-	@Override
-	public void deleteUser(int userId) {
-		log.debug("Deleting User with id {}",userId);
-		try{
-			userRepository.deleteById(userId);
-		}catch(Exception e){
-			log.error("Cannot delete with User with id {}",userId);
-			throw new NoSuchUserException();
-		}
-	}
-
-	@Override
-	public void checkUser(int userId) throws NoSuchUserException {
-		log.debug("Checking User with id {}",userId);
-		if(!userRepository.findById(userId).isPresent()) {
-			throw new NoSuchUserException();
-		}
-	}
+	@Autowired
+	private AccountRepository accountRepository;
 
 	@Override
 	public List<Item> getProductsInCart(int cartId) {
@@ -127,7 +92,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 			else if(quantity<0) {
 				throw new InvalidQuantityException();
 			}
-			else if(quantity!=0 && modifiedQuantity!=0){
+			else if(modifiedQuantity!=0){
 				cart.getProductQuantityMap().replace(productId, quantity);
 				cart.setCartPrice(this.calculateCartPrice(cart, productId, modifiedQuantity));
 			}
@@ -159,8 +124,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	}
 
 	@Override
-	public Cart getCart(int cartId) {
-		return cartRepository.findById(cartId).get();
+	public Cart getCart(int accountId) {
+		Optional<Account> account = accountRepository.findById(accountId);
+		return account.map(Account::getCart).orElse(null);
 	}
 
 	@Override

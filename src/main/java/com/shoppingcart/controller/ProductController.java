@@ -1,7 +1,6 @@
 package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Product;
-import com.shoppingcart.entity.ProductStatus;
 import com.shoppingcart.entity.Rating;
 import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.service.ShoppingCartService;
@@ -34,15 +33,15 @@ public class ProductController {
 			return new ResponseEntity<>(products, HttpStatus.FOUND);
 	}
 	@PostMapping("product/add")
-	public ResponseEntity<?> addProduct(Product product){
+	public ResponseEntity<?> addProduct(@RequestBody Product product){
 		int stockQty = product.getStockQty();
 			if(stockQty >0){
 				log.debug("Product is in stock");
-				product.setStatus(ProductStatus.InStock);
+				product.setStatus("In Stock");
 			}
 			else{
 				log.debug("Product is not in stock");
-				product.setStatus(ProductStatus.NoStock);
+				product.setStatus("No Stock");
 			}
 
 

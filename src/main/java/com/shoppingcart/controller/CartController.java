@@ -23,7 +23,6 @@ public class CartController {
 	public ResponseEntity<?> getCart(@PathVariable int accountId){
 		log.debug("Getting Cart with account id "+accountId);
 		try {
-			shoppingCartService.checkUser(accountId);
 			log.debug("Getting Cart is Success");
 			return new ResponseEntity<>(shoppingCartService.getCart(accountId), HttpStatus.FOUND);
 		} catch (Exception e) {
@@ -37,7 +36,6 @@ public class CartController {
 	public ResponseEntity<?> getProductsInCart(@PathVariable("accountId") int accountId){
 		log.debug("Getting All the products with account id "+accountId);
 		try {
-			shoppingCartService.checkUser(accountId);
 			List<Item> itemList = shoppingCartService.getProductsInCart(accountId);
 			return new ResponseEntity<>(itemList, HttpStatus.OK);
 		} catch (Exception e) {
@@ -51,7 +49,6 @@ public class CartController {
 			@PathVariable("accountId") int accountId, 
 			@RequestParam int productId){
 		try {
-			shoppingCartService.checkUser(accountId);
 			shoppingCartService.checkProduct(productId);
 			Cart cart = shoppingCartService.addProductInCart(accountId, productId);
 			return new ResponseEntity<>(cart, HttpStatus.ACCEPTED);
@@ -67,7 +64,6 @@ public class CartController {
 			@PathVariable("productId") int productId,
 			@RequestParam int quantity){
 		try {
-			shoppingCartService.checkUser(accountId);
 			shoppingCartService.checkProduct(productId);
 			Cart cart = shoppingCartService.updateProductQuantityInCart(accountId, productId, quantity);
 			return new ResponseEntity<>(cart, HttpStatus.ACCEPTED);
@@ -80,7 +76,6 @@ public class CartController {
 			@PathVariable("accountId") int accountId,
 			@RequestParam int productId){
 		try {
-			shoppingCartService.checkUser(accountId);
 			shoppingCartService.checkProduct(productId);
 			Cart cart = shoppingCartService.removeProductFromCart(accountId, productId);
 			return new ResponseEntity<>(cart, HttpStatus.OK);
@@ -91,7 +86,6 @@ public class CartController {
 	@DeleteMapping(value = "/{accountId}/cart")
 	public ResponseEntity<?> removeAllProductsFromCart(@PathVariable("accountId") int accountId){
 		try {
-			shoppingCartService.checkUser(accountId);
 			Cart cart = shoppingCartService.removeAllProductsFromCart(accountId);
 			return new ResponseEntity<>(cart, HttpStatus.OK);
 		} catch(Exception e) {

@@ -32,9 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-.idea
 .mvn
-.settings
 target
-.classpath
-.project
+src/main/java/com/shoppingcart/config

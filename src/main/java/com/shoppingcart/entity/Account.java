@@ -9,9 +9,19 @@ public class Account {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	private Integer id;
 	@Column(nullable = false)
 	private String name;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Cart cart;
+
+	public Cart getCart() {
+		return cart;
+	}
+
+	public void setCart(Cart cart) {
+		this.cart = cart;
+	}
 
 	public String getName() {
 		return name;
@@ -71,13 +81,14 @@ public class Account {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Order> ordersList;
 
-	private Role role;
+	@Column(columnDefinition = "enum(\"USER\",\"ADMIN\")")
+	private String role;
 
-	public Role getRole() {
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 

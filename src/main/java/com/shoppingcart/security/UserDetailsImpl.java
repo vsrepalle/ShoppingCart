@@ -1,6 +1,7 @@
 package com.shoppingcart.security;
 
 import com.shoppingcart.entity.Account;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,16 +9,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+@Slf4j
 public class UserDetailsImpl implements UserDetails {
 
     private final Account account;
+
     public UserDetailsImpl(Account account){
        super();
        this.account=account;
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(account.getRole().name()));
+        log.info("getAuthorities called and role is "+account.getRole());
+        return Collections.singleton(new SimpleGrantedAuthority(account.getRole()));
     }
 
     @Override

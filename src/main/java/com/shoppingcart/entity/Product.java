@@ -15,6 +15,14 @@ public class Product {
 	@Column
 	private String category;
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public int getStockQty() {
 		return stockQty;
 	}
@@ -38,16 +46,8 @@ public class Product {
 	@Column
 	private int stockQty;
 
-	public ProductStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(ProductStatus status) {
-		this.status = status;
-	}
-
-	@Enumerated(EnumType.STRING)
-	private ProductStatus status;
+	@Column(columnDefinition = "enum(\"In Stock\",\"No Stock\")")
+	private String status;
 
 	public Product(int productId, String prodName, float price, String category) {
 		this.productId = productId;

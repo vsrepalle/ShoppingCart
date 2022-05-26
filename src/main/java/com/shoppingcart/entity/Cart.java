@@ -6,19 +6,16 @@ import java.util.Map;
 @Entity
 @Table(name="cart")
 public class Cart {
-	
-	@OneToOne(mappedBy="cart")
-	private User user;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int cartId;
-	
+
 	@Column
 	private float cartPrice;
-	
+
 	@ElementCollection
-    @CollectionTable(name = "product_quantity_mapping", 
+    @CollectionTable(name = "product_quantity_mapping",
       joinColumns = {@JoinColumn(name = "cartId")})
     @MapKeyJoinColumn(name = "product_id")
 	@Column(name = "Quantity")
