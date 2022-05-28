@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "users")
+@RequestMapping(value = "orders")
 public class OrderController {
 
 	@Autowired

@@ -40,13 +40,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
         http
                 .authorizeRequests()
-                .antMatchers("/product/add","/product/update/{productId}","/product/delete/{productId}")
+                .antMatchers("/product/add/**","/product/update/{productId}","/product/delete/{productId}")
                 .hasAuthority("ADMIN")
-                .antMatchers("/users/{accountId}/cart/**")
-                .hasAuthority("USER")
-                .antMatchers("/products")
-                .hasAuthority("USER")
-                .antMatchers("/users/{accountId}/cart")
+                .antMatchers("/users/{accountId}/cart/**","/products/**","/users/{accountId}/cart/**","/wishlist/account/**","/product/**","/orders/**")
                 .hasAuthority("USER")
                 .anyRequest()
                 .authenticated()
@@ -54,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic();
     }
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/users/account","/account/login");
     }
 

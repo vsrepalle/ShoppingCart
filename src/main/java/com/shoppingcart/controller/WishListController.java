@@ -23,9 +23,9 @@ public class WishListController {
 		this.wishListRepository = wishListRepository;
 	}
 	@Autowired
-	private AccountRepository accountRepository;
+	private final AccountRepository accountRepository;
 	@Autowired
-	private WishListRepository wishListRepository;
+	private final WishListRepository wishListRepository;
 
 
 
