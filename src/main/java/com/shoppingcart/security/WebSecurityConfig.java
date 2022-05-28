@@ -32,23 +32,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/users/account","/account/login");
-    }
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
-/*        http.cors().disable();
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(STATELESS);*/
-        http.authorizeRequests()
+        http.cors().and().csrf().disable();
+        http
+                .authorizeRequests()
                 .antMatchers("/users/account","/account/login")
-                .permitAll()
-                .and()
+                .permitAll();
+        http
                 .authorizeRequests()
                 .antMatchers("/product/add","/product/update/{productId}","/product/delete/{productId}")
                 .hasAuthority("ADMIN")
-                .antMatchers("/users/{accountId}/cart")
+                .antMatchers("/users/{accountId}/cart/**")
                 .hasAuthority("USER")
                 .antMatchers("/products")
                 .hasAuthority("USER")
@@ -58,7 +52,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 .httpBasic();
-        //http.authorizeRequests().antMatchers("/**").permitAll();
+    }
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/users/account","/account/login");
     }
 
 }

@@ -20,7 +20,6 @@ public class UserDetailsImpl implements UserDetails {
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        log.info("getAuthorities called and role is "+account.getRole());
         return Collections.singleton(new SimpleGrantedAuthority(account.getRole()));
     }
 
