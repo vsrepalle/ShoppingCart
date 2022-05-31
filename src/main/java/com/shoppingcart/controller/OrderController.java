@@ -25,7 +25,7 @@ public class OrderController {
 	@Autowired
 	private OrderRepository orderRepository;
 	@Autowired
-	ShoppingCartService shoppingCartService;
+	private ShoppingCartService shoppingCartService;
 
 	@PostMapping(value = "/account/addOrder/{accountId}")
 	public ResponseEntity<?> addOrder(@PathVariable("accountId") Integer accountId,
@@ -38,10 +38,7 @@ public class OrderController {
 			orderInReq.setOrderId(java.util.UUID.randomUUID().toString());
 			orderList.add(orderInReq);
 			accountObjInDB.setOrdersList(orderList);
-			addToHistoryOfOrders(orderInReq, accountObjInDB);
 			accountRepository.save(accountObjInDB);
-			// TODO Need to check if products are deleted from Cart.
-
 			shoppingCartService.removeAllProductsFromCart(accountId);
 
 			return new ResponseEntity<>("Order Added Successfully and all products are removed from Cart", HttpStatus.CREATED);
@@ -50,31 +47,6 @@ public class OrderController {
 
 	}
 
-
-	@GetMapping(value = "/account/getAllHistoryOfRecords")
-	public ResponseEntity<?> getAllHistoryOfOrders(@PathVariable("/accountId") Integer accountId,
-									  @RequestBody @Valid Order orderInReq) {
-		Optional<Account> account = accountRepository.findById(accountId);
-		if (account.isPresent()) {
-			Account accountObjInDB = account.get();
-			List<Order> historyOfOrders = account.get().getHistoryOfOrders();
-			return new ResponseEntity<>( historyOfOrders , HttpStatus.FOUND);
-		}
-		return new ResponseEntity<>( "No History Of Orders found with --->" + accountId,HttpStatus.NOT_FOUND);
-	}
-
-	private void addToHistoryOfOrders(Order orderInReq, Account accountObjInDB) {
-		// TODO Need to check if Order is added to History Of Orders.
-		// Adding the Order to History Of Orders.
-		if(accountObjInDB.getHistoryOfOrders() != null){
-			accountObjInDB.getHistoryOfOrders().add(orderInReq);
-		}
-		else{
-			List<Order> historyOrderList = new ArrayList<>();
-			historyOrderList.add(orderInReq);
-			accountObjInDB.setHistoryOfOrders(historyOrderList);
-		}
-	}
 
 	@GetMapping(value = "/account/filterOrdersByStatus/{accountId}/{status}")
 	public ResponseEntity<?> filterOrdersByStatus(@PathVariable("accountId") Integer accountId,

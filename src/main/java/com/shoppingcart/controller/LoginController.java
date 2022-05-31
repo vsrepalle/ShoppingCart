@@ -2,6 +2,7 @@ package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Account;
 import com.shoppingcart.repository.AccountRepository;
+import com.shoppingcart.request.AccountRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class LoginController {
 	private PasswordEncoder passwordEncoder;
 
 	@PostMapping(value = "/login")
-	public ResponseEntity<?> login(@RequestBody Account account) {
+	public ResponseEntity<?> login(@RequestBody AccountRequest account) {
 		String accountName = account.getName();
 		if (null != accountName && accountName.isEmpty()) {
 			return new ResponseEntity<>("User Name is not entered", HttpStatus.BAD_REQUEST);

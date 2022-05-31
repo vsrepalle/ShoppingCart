@@ -39,13 +39,6 @@ public class Account {
 		this.password = password;
 	}
 
-	public String getConfirmPassword() {
-		return confirmPassword;
-	}
-
-	public void setConfirmPassword(String confirmPassword) {
-		this.confirmPassword = confirmPassword;
-	}
 
 	public String getEmail() {
 		return email;
@@ -73,8 +66,6 @@ public class Account {
 			,message="Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:")
 	@Column(nullable = false)
 	private String password;
-	@Column(nullable = false)
-	private String confirmPassword;
 	@Column(unique=true,nullable=false)
 	private String email;
 	
@@ -103,15 +94,6 @@ public class Account {
 	@OneToOne(cascade = CascadeType.ALL)
 	private ShippingAddress shippingAddress;
 
-	public List<Order> getHistoryOfOrders() {
-		return historyOfOrders;
-	}
 
-	public void setHistoryOfOrders(List<Order> historyOfOrders) {
-		this.historyOfOrders = historyOfOrders;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL)
-	private List<Order> historyOfOrders;
 
 }

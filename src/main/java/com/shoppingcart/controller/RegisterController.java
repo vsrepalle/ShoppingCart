@@ -1,7 +1,9 @@
 package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Account;
+import com.shoppingcart.mapper.AccountMapper;
 import com.shoppingcart.repository.AccountRepository;
+import com.shoppingcart.request.AccountRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,7 @@ public class RegisterController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@PostMapping(value = "/account")
-	public ResponseEntity<?> register(@RequestBody Account account) {
+	public ResponseEntity<?> register(@RequestBody AccountRequest account) {
 		if (null != account.getName() && !isValidUsername(account.getName())) {
 			return new ResponseEntity<>("Name Shouldn't contain anything other than alphabets", HttpStatus.BAD_REQUEST);
 		}
@@ -43,13 +45,9 @@ public class RegisterController {
 			}
 
 			if (account.getPassword().equals(account.getConfirmPassword())) {
-				if (account.getWishList() != null) {
-					return new ResponseEntity<>("Only Registered Account can add wishlist", HttpStatus.BAD_REQUEST);
-				} else {
 					account.setPassword(passwordEncoder.encode(account.getPassword()));
-					accountRepository.save(account);
+					accountRepository.save(AccountMapper.mapToAccount(account));
 					return new ResponseEntity<>("Account Registered", HttpStatus.CREATED);
-				}
 			}
 			return new ResponseEntity<>("Password and ConfirmPassword are not same", HttpStatus.BAD_REQUEST);
 		}

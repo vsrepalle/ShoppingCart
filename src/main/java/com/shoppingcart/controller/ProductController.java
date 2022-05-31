@@ -98,7 +98,7 @@ public class ProductController {
 			Rating ratingInDB = product.getRating();
 			if(ratingInDB != null) {
 				ratingInDB.setRating(rating.getRating());
-				ratingInDB.setProductId(rating.getProductId());
+				ratingInDB.setRatingId(rating.getRatingId());
 				ratingInDB.setUserId(rating.getUserId());
 				ratingInDB.setRemarks(rating.getRemarks());
 				product.setRating(ratingInDB);

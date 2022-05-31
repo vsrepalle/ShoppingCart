@@ -27,7 +27,7 @@ public class SearchProductController {
 			List<Product> product = productRepository.findByProductName(prodName);
 
 			if (product == null) {
-				return new ResponseEntity<String>("No Product is found with product name :" + prodName, HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("No Product is found with product name :" + prodName, HttpStatus.NOT_FOUND);
 			}
 
 			return new ResponseEntity<>(product, HttpStatus.FOUND);
