@@ -6,12 +6,15 @@ import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -88,6 +91,13 @@ public class ProductController {
 			log.error(e.getMessage(),e);
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
+	}
+	@GetMapping("/product/topRated")
+	public ResponseEntity<?> topRated(){
+		return new ResponseEntity<>(productRepository.findByOrderByRating_RatingDesc()
+				.stream()
+				.limit(10)
+				.collect(Collectors.toList()), HttpStatus.ACCEPTED);
 	}
 
 	@PutMapping("product/rate/{productId}")
