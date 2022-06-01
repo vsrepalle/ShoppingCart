@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer>{
@@ -16,5 +17,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer>{
 	@Query(value = "select * from product p where p.prod_name like :prodName%",nativeQuery = true)
 	List<Product> findByProductName(@Param("prodName") String prodName);
 	List<Product> findByCategory(String category);
+
+	@Query("select p from Product p where p.stockQty=min(p.stockQty)")
+	Optional<Product> getLowStockProduct();
 
 }

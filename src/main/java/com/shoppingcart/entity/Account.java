@@ -72,7 +72,7 @@ public class Account {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Order> ordersList;
 
-	@Column(columnDefinition = "enum(\"USER\",\"ADMIN\")")
+	@Column(columnDefinition = "enum(\"USER\",\"ADMIN\")",nullable = false)
 	private String role;
 
 	public String getRole() {

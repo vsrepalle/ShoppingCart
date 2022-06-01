@@ -3,6 +3,7 @@ package com.shoppingcart.controller;
 import com.shoppingcart.entity.Account;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.request.AccountRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "account")
+@Slf4j
 public class LoginController {
 	@Autowired
 	private AccountRepository accountRepository;
@@ -24,6 +26,7 @@ public class LoginController {
 
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody AccountRequest account) {
+		log.debug("registered user should be login",account);
 		String accountName = account.getName();
 		if (null != accountName && accountName.isEmpty()) {
 			return new ResponseEntity<>("User Name is not entered", HttpStatus.BAD_REQUEST);

@@ -48,6 +48,7 @@ public class CartController {
 	public ResponseEntity<?> addProductInCart(
 			@PathVariable("accountId") int accountId, 
 			@RequestParam int productId){
+		log.debug("adding products in cart with accountId "+accountId+" and productId "+productId);
 		try {
 			shoppingCartService.checkProduct(productId);
 			Cart cart = shoppingCartService.addProductInCart(accountId, productId);
@@ -63,32 +64,43 @@ public class CartController {
 			@PathVariable("accountId") int accountId,
 			@PathVariable("productId") int productId,
 			@RequestParam int quantity){
+		log.debug("update the product quantityInCart with accountId"+accountId+" and productId "+productId+" and quantity"+quantity);
 		try {
 			shoppingCartService.checkProduct(productId);
+			log.debug("checking the product with productId "+productId);
 			Cart cart = shoppingCartService.updateProductQuantityInCart(accountId, productId, quantity);
+			log.debug("Successfully updated by productQuantity in cart");
 			return new ResponseEntity<>(cart, HttpStatus.ACCEPTED);
 		} catch(Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+		log.error(e.getMessage(),e);		
+	return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
 		}
 	}
 	@DeleteMapping(value = "/{accountId}/cart/products")
 	public ResponseEntity<?> removeProductFromCart(
 			@PathVariable("accountId") int accountId,
 			@RequestParam int productId){
+		log.debug("deleting product's in cart with accountId "+accountId+" and productId "+productId);
 		try {
 			shoppingCartService.checkProduct(productId);
+			log.debug("checking the product in cart with productId "+productId);
 			Cart cart = shoppingCartService.removeProductFromCart(accountId, productId);
+			log.debug("Successfully deleted product from cart");
 			return new ResponseEntity<>(cart, HttpStatus.OK);
 		} catch(Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+		log.error(e.getMessage(),e);
+		return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
 		}	
 	}
 	@DeleteMapping(value = "/{accountId}/cart")
 	public ResponseEntity<?> removeAllProductsFromCart(@PathVariable("accountId") int accountId){
+		log.debug("deleting all product's from cart "+accountId);
 		try {
 			Cart cart = shoppingCartService.removeAllProductsFromCart(accountId);
+			log.debug("Successfully deleted the all products in cart");
 			return new ResponseEntity<>(cart, HttpStatus.OK);
 		} catch(Exception e) {
+			log.error(e.getMessage(),e);
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}

@@ -1,9 +1,11 @@
 package com.shoppingcart.controller;
 
+import com.mysql.cj.log.Log;
 import com.shoppingcart.entity.Account;
 import com.shoppingcart.mapper.AccountMapper;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.request.AccountRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping(value = "users")
+@Slf4j
 public class RegisterController {
 
     @Autowired
@@ -27,6 +30,7 @@ public class RegisterController {
 	private PasswordEncoder passwordEncoder;
 	@PostMapping(value = "/account")
 	public ResponseEntity<?> register(@RequestBody AccountRequest account) {
+		log.debug("adding user details into the account",account);
 		if (null != account.getName() && !isValidUsername(account.getName())) {
 			return new ResponseEntity<>("Name Shouldn't contain anything other than alphabets", HttpStatus.BAD_REQUEST);
 		}

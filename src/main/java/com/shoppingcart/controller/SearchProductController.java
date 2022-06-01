@@ -2,6 +2,7 @@ package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Product;
 import com.shoppingcart.repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "search")
+@Slf4j
 public class SearchProductController {
 
 	@Autowired
@@ -23,10 +25,12 @@ public class SearchProductController {
 
 	@GetMapping(value = "/productByName/{prodName}")
 	public ResponseEntity<?> getProductByName(@PathVariable String prodName) {
+		log.debug("serach by product productByName prodName{}",prodName);
 		try {
 			List<Product> product = productRepository.findByProductName(prodName);
 
 			if (product == null) {
+				log.debug("product is empty");
 				return new ResponseEntity<>("No Product is found with product name :" + prodName, HttpStatus.NOT_FOUND);
 			}
 
@@ -39,11 +43,13 @@ public class SearchProductController {
 
 	@GetMapping(value = "/productById/{prodId}")
 	public ResponseEntity<?> getProductById(@PathVariable Integer prodId) {
+		log.debug("search by product with productById",prodId);
 		try {
 
 			Optional<Product> product = productRepository.findById(prodId);
 
 			if (!product.isPresent()) {
+				log.debug("product not found by Id");
 				return new ResponseEntity<>("No Product is found with product with ID :" + prodId, HttpStatus.NOT_FOUND);
 			}
 

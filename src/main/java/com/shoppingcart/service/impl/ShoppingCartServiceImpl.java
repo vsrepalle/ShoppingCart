@@ -44,6 +44,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		return itemList;
 	}
 	private float calculateCartPrice(Cart cart, int productId, int modifiedQuantity) {
+		log.debug("caluculateing the cart price with productId and modifiedQunatity",+productId, modifiedQuantity);
 		float productPrice = productRepository.findById(productId).get().getPrice();
 		if(modifiedQuantity==0) {
 			int quantity = cart.getProductQuantityMap().get(productId);
@@ -54,6 +55,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		}
 	}
 	private boolean checkProductInCart(Cart cart, int productId) throws ProductNotPresentInCartException {
+		log.debug("checking the product inthe cart with productId{}",+productId);
 		if(cart.getProductQuantityMap().containsKey(productId)) {
 			return true;
 		}
@@ -82,6 +84,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	@Override
 	public Cart updateProductQuantityInCart(int cartId, int productId, int quantity)
 			throws ProductNotPresentInCartException, InvalidQuantityException {
+		log.debug("updating product with id {} in cart with id{} in quantity{}",cartId,productId,quantity);
 		Cart cart = cartRepository.findById(cartId).get();
 		if(this.checkProductInCart(cart, productId)) { //check if product is present in cart
 			int modifiedQuantity = quantity-cart.getProductQuantityMap().get(productId);
@@ -106,6 +109,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Override
 	public Cart removeProductFromCart(int cartId, int productId) throws ProductNotPresentInCartException {
+		log.debug("remove form product with id{} in the cart id{}", cartId, productId);
 		Cart cart = cartRepository.findById(cartId).get();
 		this.checkProductInCart(cart, productId); //check if product is present in cart
 		int quantity = cart.getProductQuantityMap().get(productId);
@@ -117,6 +121,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Override
 	public Cart removeAllProductsFromCart(int cartId) {
+		log.debug("removing all products form cart Id{}",cartId);
 		Cart cart = cartRepository.findById(cartId).get();
 		cart.getProductQuantityMap().clear();
 		cart.setCartPrice(0);
@@ -125,12 +130,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Override
 	public Cart getCart(int accountId) {
+		log.debug("get all product's in cart with accountId{}");
 		Optional<Account> account = accountRepository.findById(accountId);
 		return account.map(Account::getCart).orElse(null);
 	}
 
 	@Override
 	public List<Product> getAllProducts() {
+		log.debug("get all products");
 		return productRepository.findAll();
 	}
 
@@ -138,6 +145,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Override
 	public List<Product> searchProductsByCategory(String category) throws EmptyListOfProductsException {
+		log.debug("search product by category",category);
 		if(productRepository.findByCategory(category).isEmpty()) {
 			throw new EmptyListOfProductsException();
 		}
@@ -146,6 +154,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Override
 	public void checkProduct(int productId) throws NoSuchProductException {
+		log.debug("checking product with productId{}",productId);
 		if(!productRepository.findById(productId).isPresent()) {
 			throw new NoSuchProductException();
 		}

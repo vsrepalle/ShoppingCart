@@ -5,6 +5,7 @@ import com.shoppingcart.entity.Order;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.OrderRepository;
 import com.shoppingcart.service.ShoppingCartService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "orders")
+@Slf4j
 public class OrderController {
 
 	@Autowired
@@ -30,6 +32,7 @@ public class OrderController {
 	@PostMapping(value = "/account/addOrder/{accountId}")
 	public ResponseEntity<?> addOrder(@PathVariable("accountId") Integer accountId,
 			@RequestBody @Valid Order orderInReq) {
+		log.debug("adding orders with accountId{}",+accountId);
 
 		Optional<Account> account = accountRepository.findById(accountId);
 		if (account.isPresent()) {
@@ -51,6 +54,7 @@ public class OrderController {
 	@GetMapping(value = "/account/filterOrdersByStatus/{accountId}/{status}")
 	public ResponseEntity<?> filterOrdersByStatus(@PathVariable("accountId") Integer accountId,
 			@PathVariable("status") String status) {
+		log.debug("checking the status of order{}",+accountId,status);
 
 		Optional<Account> account = accountRepository.findById(accountId);
 
@@ -71,6 +75,7 @@ public class OrderController {
 	}
 	@GetMapping(value="/account/listOrders/{accountId}")
 	public ResponseEntity<?> listOfOrders(@PathVariable("accountId") Integer accountId){
+		log.debug("showing the list of orders with accountId{}",+accountId);
 		Optional<Account> account = accountRepository.findById(accountId);
 		if(account.isPresent()) {
 			if(account.get().getOrdersList().isEmpty()) {
@@ -83,6 +88,7 @@ public class OrderController {
 
 	@GetMapping(value = "/account/returnOrder/{orderId}")
 	public ResponseEntity<?> returnOrder(@PathVariable("orderId") String orderId) {
+		log.debug("order was taking return with orderId{}",orderId);
 
 		Optional<Order> orderInDB = orderRepository.findById(orderId);
 		if (orderInDB.isPresent()) {
@@ -110,6 +116,7 @@ public class OrderController {
 
 	@DeleteMapping(value = "/account/cancelOrder/{orderId}")
 	public ResponseEntity<?> cancelOrder(@PathVariable("orderId") String orderId) {
+		log.debug("order cancel with orderId{}",orderId);
 
 		Optional<Order> orderInDB = orderRepository.findById(orderId);
 		if (orderInDB.isPresent()) {

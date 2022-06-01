@@ -2,6 +2,7 @@ package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.ShippingAddress;
 import com.shoppingcart.repository.ShippingAddressRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +17,13 @@ import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/shippingaddress")
+@Slf4j
 public class ShippingAddressController {
     @Autowired
     private ShippingAddressRepository shippingAddressRepository;
     @PostMapping("/add")
     public ResponseEntity<?> addShippingAddress(@RequestBody ShippingAddress shippingAddress){
+    	log.debug("adding the shippingAddress");
     	if (!(shippingAddress.getCardNumber()
         		.length()==16&&onlyDigits(shippingAddress.getCardNumber()))) {
             return new ResponseEntity<>("Card Number is not valid", HttpStatus.BAD_REQUEST);
@@ -29,6 +32,7 @@ public class ShippingAddressController {
             return new ResponseEntity<>("Cvv is not valid", HttpStatus.BAD_REQUEST);
         }
         if (shippingAddress.getExpiryMonth() > 12) {
+        	log.debug("card month is expired");
             return new ResponseEntity<>("Expiry Month Is Greater Than 12", HttpStatus.BAD_REQUEST);
         }
         if (isCardExpired(shippingAddress)) {
@@ -51,6 +55,7 @@ public class ShippingAddressController {
     private static boolean isCardExpired(ShippingAddress shippingAddress){
         LocalDate date = LocalDate.now();
         if(shippingAddress.getExpiryYear()>date.getYear()){
+        	log.debug("card is expired");
             return false;
         }
             return shippingAddress.getExpiryYear()<date.getYear() ||
