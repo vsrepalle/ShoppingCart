@@ -5,7 +5,9 @@ import com.shoppingcart.entity.Order;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.OrderRepository;
 import com.shoppingcart.service.ShoppingCartService;
-import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "orders")
-@Slf4j
 public class OrderController {
 
 	@Autowired
@@ -28,6 +29,8 @@ public class OrderController {
 	private OrderRepository orderRepository;
 	@Autowired
 	private ShoppingCartService shoppingCartService;
+	
+	private final Logger log = LoggerFactory.getLogger(OrderController.class);
 
 	@PostMapping(value = "/account/addOrder/{accountId}")
 	public ResponseEntity<?> addOrder(@PathVariable("accountId") Integer accountId,
