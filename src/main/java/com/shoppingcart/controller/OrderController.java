@@ -5,7 +5,6 @@ import com.shoppingcart.entity.Order;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.OrderRepository;
 import com.shoppingcart.service.ShoppingCartService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "orders")
@@ -53,11 +53,30 @@ public class OrderController {
 
 	}
 
+	@PostMapping(value = "/account/getOrdersInFutureDate")
+	public ResponseEntity<?> getOrdersInFutureDate() {
+		log.debug("getOrdersInFutureDate");
+		List<Order> orders = orderRepository.findAll();
+		orders=orders.stream().filter(order -> {
+			Date orderDate = order.getOrderedDate();
+			Date now = new Date();
+			long difference_In_Time
+					= orderDate.getTime() - now.getTime();
+			long difference_In_Days
+					= (difference_In_Time
+					/ (1000 * 60 * 60 * 24))
+					% 365;
+			return order.getOrderStatus().equals("PENDING") && difference_In_Days <= 2;
+		}).collect(Collectors.toList());
+		return new ResponseEntity<>(orders, HttpStatus.NOT_FOUND);
+
+	}
+
 
 	@GetMapping(value = "/account/filterOrdersByStatus/{accountId}/{status}")
 	public ResponseEntity<?> filterOrdersByStatus(@PathVariable("accountId") Integer accountId,
 			@PathVariable("status") String status) {
-		log.debug("checking the status of order{}",+accountId,status);
+		log.debug("checking the status of order {} with account {}",status,accountId);
 
 		Optional<Account> account = accountRepository.findById(accountId);
 
@@ -78,7 +97,7 @@ public class OrderController {
 	}
 	@GetMapping(value="/account/listOrders/{accountId}")
 	public ResponseEntity<?> listOfOrders(@PathVariable("accountId") Integer accountId){
-		log.debug("showing the list of orders with accountId{}",+accountId);
+		log.debug("showing the list of orders with accountId {}",+accountId);
 		Optional<Account> account = accountRepository.findById(accountId);
 		if(account.isPresent()) {
 			if(account.get().getOrdersList().isEmpty()) {

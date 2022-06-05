@@ -3,7 +3,8 @@ package com.shoppingcart.controller;
 import com.shoppingcart.entity.Account;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.request.AccountRequest;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +18,15 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "account")
-@Slf4j
+
 public class LoginController {
 	@Autowired
 	private AccountRepository accountRepository;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	private final Logger log = LoggerFactory.getLogger(LoginController.class);
+
 
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody AccountRequest account) {

@@ -1,7 +1,6 @@
 package com.shoppingcart.security;
 
 import com.shoppingcart.entity.Account;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-@Slf4j
 public class UserDetailsImpl implements UserDetails {
 
     private final Account account;

@@ -12,7 +12,8 @@ import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.CartRepository;
 import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.service.ShoppingCartService;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@Slf4j
+
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Autowired
@@ -31,6 +32,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	private CartRepository cartRepository;
 	@Autowired
 	private AccountRepository accountRepository;
+	
+	private final Logger log = LoggerFactory.getLogger(ShoppingCartServiceImpl.class);
+
 
 	@Override
 	public List<Item> getProductsInCart(int cartId) {
@@ -44,7 +48,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		return itemList;
 	}
 	private float calculateCartPrice(Cart cart, int productId, int modifiedQuantity) {
-		log.debug("caluculateing the cart price with productId and modifiedQunatity",+productId, modifiedQuantity);
+		log.debug("calculating the cart price with productId {} and modifiedQuantity {}",productId, modifiedQuantity);
 		float productPrice = productRepository.findById(productId).get().getPrice();
 		if(modifiedQuantity==0) {
 			int quantity = cart.getProductQuantityMap().get(productId);
@@ -54,12 +58,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 			return cart.getCartPrice()+(productPrice*modifiedQuantity);
 		}
 	}
-	private boolean checkProductInCart(Cart cart, int productId) throws ProductNotPresentInCartException {
-		log.debug("checking the product inthe cart with productId{}",+productId);
-		if(cart.getProductQuantityMap().containsKey(productId)) {
-			return true;
-		}
-		else {
+	private void checkProductInCart(Cart cart, int productId) throws ProductNotPresentInCartException {
+		log.debug("checking the product in the cart with productId {}",productId);
+		if(!cart.getProductQuantityMap().containsKey(productId)) {
 			throw new ProductNotPresentInCartException();
 		}
 	}
@@ -86,7 +87,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 			throws ProductNotPresentInCartException, InvalidQuantityException {
 		log.debug("updating product with id {} in cart with id{} in quantity{}",cartId,productId,quantity);
 		Cart cart = cartRepository.findById(cartId).get();
-		if(this.checkProductInCart(cart, productId)) { //check if product is present in cart
+		this.checkProductInCart(cart, productId);
 			int modifiedQuantity = quantity-cart.getProductQuantityMap().get(productId);
 			if(quantity == 0) {
 				cart.setCartPrice(this.calculateCartPrice(cart, productId, quantity));
@@ -100,10 +101,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 				cart.setCartPrice(this.calculateCartPrice(cart, productId, modifiedQuantity));
 			}
 			return cartRepository.save(cart);
-		}
-		else {
-			throw new ProductNotPresentInCartException();
-		}
 	}
 
 

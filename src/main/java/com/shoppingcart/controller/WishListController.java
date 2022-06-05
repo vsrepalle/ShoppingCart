@@ -4,7 +4,8 @@ import com.shoppingcart.entity.Account;
 import com.shoppingcart.entity.WishList;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.WishListRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "wishlist")
-@Slf4j
+
 public class WishListController {
 
 	public WishListController(AccountRepository accountRepository, WishListRepository wishListRepository) {
@@ -28,6 +29,9 @@ public class WishListController {
 	private final AccountRepository accountRepository;
 	@Autowired
 	private final WishListRepository wishListRepository;
+	
+	private final Logger log = LoggerFactory.getLogger(WishListController.class);
+
 
 
 
@@ -55,7 +59,7 @@ public class WishListController {
 	@PutMapping(value = "/account/update/{wishListId}")
 	public ResponseEntity<?> updateWishList(@PathVariable("wishListId") Integer wishListId,
 			@RequestBody @Valid WishList wishListInReq) {
-		log.debug("updating whishlist with wishListId{}"+wishListId);
+		log.debug("updating wishlist with wishListId {}",wishListId);
 		if (wishListRepository.existsById(wishListId)) {
 			WishList wishList = wishListRepository.findById(wishListId).get();
 			wishList.setCategory(wishListInReq.getCategory());
@@ -71,7 +75,7 @@ public class WishListController {
 	@DeleteMapping(value = "/account/delete/{accountId}/{wishListId}")
 	public ResponseEntity<?> deleteWishList(@PathVariable("wishListId") Integer wishListId,
 			@PathVariable("accountId") Integer accountId) {
-		log.debug("delet the wishlistId with accountId{}",+accountId);
+		log.debug("delete the wishlistId with accountId {}",accountId);
 		Optional<WishList> wishListFromDB = wishListRepository.findById(wishListId);
 		Optional<Account> accountFromDB = accountRepository.findById(accountId);
 		if (wishListFromDB.isPresent() && accountFromDB.isPresent()) {

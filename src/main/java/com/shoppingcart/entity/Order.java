@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.List;
+
 @Entity
 @Table(name= "order_new")
 public class Order {
@@ -117,7 +119,7 @@ public class Order {
 	private Date orderedDate;
 
 	private String orderStatus;
-	
+
 	
 
 }
