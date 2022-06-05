@@ -36,8 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/product/add/**","/product/update/{productId}","/product/delete/{productId}",
-                             "/product/topRated","/account/findAll","/account/makeAdmin/{accountId}","/product/lowStockProduct")
+                .antMatchers("/product/add/**","/product/update/{productId}/**","/product/delete/{productId}/**",
+                             "/product/topRated/**","/account/findAll/**","/account/makeAdmin/{accountId}/**","/product/lowStockProduct/**")
                 .hasAuthority("ADMIN")
                 .antMatchers("/users/{accountId}/cart/**","/products/**", "/wishlist/account/**",
                                         "/product/**","/orders/**","/checkout/{shippingAddressId}",
