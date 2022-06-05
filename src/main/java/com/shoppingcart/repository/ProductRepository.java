@@ -17,7 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>{
 	List<Product> findByProductName(@Param("prodName") String prodName);
 	List<Product> findByCategory(String category);
 
-	@Query("select p from Product p where p.stockQty=min(p.stockQty)")
+	@Query("select p from Product p group by p.stockQty having p.stockQty=min(p.stockQty)")
 	Optional<Product> getLowStockProduct();
 
 }
