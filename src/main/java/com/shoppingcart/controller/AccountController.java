@@ -18,7 +18,7 @@ public class AccountController {
 
     @GetMapping("/account/findAll")
     public ResponseEntity<?> getAllAccounts(){
-        return new ResponseEntity<>(accountRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(accountRepository.findByRole("USER"), HttpStatus.OK);
     }
     @PostMapping("/account/makeAdmin/{accountId}")
     public ResponseEntity<?> makeAdmin(@PathVariable("accountId") Integer accountId){

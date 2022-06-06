@@ -92,5 +92,13 @@ public class WishListController {
 		}
 		return new ResponseEntity<>("WishList Not Found With Id " + wishListId, HttpStatus.NOT_FOUND);
 	}
+	@GetMapping("/account/getWishList/{accountId}")
+	public ResponseEntity<?> getWishList(@PathVariable Integer accountId){
+		Optional<Account> accountOptional = accountRepository.findById(accountId);
+		if(accountOptional.isPresent()){
+           return new ResponseEntity<>(accountOptional.get().getWishList(),HttpStatus.OK);
+		}
+		return new ResponseEntity<>("Account Not Found With id "+accountId,HttpStatus.NOT_FOUND);
+	}
 
 }
