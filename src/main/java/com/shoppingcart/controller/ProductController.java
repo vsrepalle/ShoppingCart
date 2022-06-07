@@ -133,7 +133,7 @@ public class ProductController {
 
     @GetMapping("/product/lowStockProduct")
     public ResponseEntity<?> getLowStockProduct() {
-        return new ResponseEntity<>(productRepository.getLowStockProduct().get(), HttpStatus.OK);
+        return new ResponseEntity<>(productRepository.getLowStockProduct().get(0), HttpStatus.OK);
     }
 
 }
