@@ -2,6 +2,7 @@ package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Cart;
 import com.shoppingcart.entity.Item;
+import com.shoppingcart.entity.Product;
 import com.shoppingcart.service.ShoppingCartService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,8 @@ public class CartController {
 	public ResponseEntity<?> getProductsInCart(@PathVariable("accountId") int accountId){
 		log.debug("Getting All the products with account id "+accountId);
 		try {
-			List<Item> itemList = shoppingCartService.getProductsInCart(accountId);
-			return new ResponseEntity<>(itemList, HttpStatus.OK);
+			List<Product> products = shoppingCartService.getProductsInCart(accountId);
+			return new ResponseEntity<>(products, HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);

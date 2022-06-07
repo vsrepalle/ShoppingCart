@@ -42,6 +42,7 @@ public class OrderController {
 			Account accountObjInDB = account.get();
 			List<Order> orderList = accountObjInDB.getOrdersList();
 			orderInReq.setOrderId(java.util.UUID.randomUUID().toString());
+
 			orderList.add(orderInReq);
 			accountObjInDB.setOrdersList(orderList);
 			accountRepository.save(accountObjInDB);

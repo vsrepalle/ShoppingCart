@@ -45,6 +45,9 @@ public class ProductController {
             product.setStatus("In Stock");
         } else {
             log.debug("Product is not in stock");
+            if(stockQty < 0){
+                product.setStockQty(0);
+            }
             product.setStatus("No Stock");
         }
 

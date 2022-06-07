@@ -37,15 +37,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 
 	@Override
-	public List<Item> getProductsInCart(int cartId) {
+	public List<Product> getProductsInCart(int cartId) {
 		log.debug("Getting Products in Cart By Cart Id {}",cartId);
 		Map<Integer,Integer> productQuantityMap = cartRepository.findById(cartId).get().getProductQuantityMap();
-		List<Item> itemList = new ArrayList<>();
+		List<Product> productsList = new ArrayList<>();
 		for (Map.Entry<Integer,Integer> entry : productQuantityMap.entrySet()) {
-			Item item = new Item(productRepository.findById(entry.getKey()).get(),entry.getValue());
-			itemList.add(item);
+			Product product = productRepository.findById(entry.getKey()).get();
+			productsList.add(product);
 		}
-		return itemList;
+		return productsList;
 	}
 	private float calculateCartPrice(Cart cart, int productId, int modifiedQuantity) {
 		log.debug("calculating the cart price with productId {} and modifiedQuantity {}",productId, modifiedQuantity);
