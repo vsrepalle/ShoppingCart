@@ -127,7 +127,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 	@Override
 	public Cart getCart(int accountId) {
-		log.debug("get all product's in cart with accountId{}");
+		log.debug("get all product's in cart with accountId {}",accountId);
 		Optional<Account> account = accountRepository.findById(accountId);
 		return account.map(Account::getCart).orElse(null);
 	}

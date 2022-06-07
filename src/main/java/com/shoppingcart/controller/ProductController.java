@@ -61,6 +61,11 @@ public class ProductController {
             product.setCategory(productFromRequest.getCategory());
             product.setPrice(productFromRequest.getPrice());
             product.setProdName(productFromRequest.getProdName());
+            if(productFromRequest.getStockQty() < 0){
+                productFromRequest.setStockQty(0);
+            }
+            product.setStockQty(productFromRequest.getStockQty());
+            product.setStatus(productFromRequest.getStockQty() > 0?"In Stock":"No Stock");
             productRepository.save(product);
             log.debug("Product updated Successfully with id " + productId);
             return new ResponseEntity<>("Product Updated Successfully", HttpStatus.OK);

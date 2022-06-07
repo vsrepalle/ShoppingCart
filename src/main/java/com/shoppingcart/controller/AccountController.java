@@ -2,6 +2,7 @@ package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Account;
 import com.shoppingcart.repository.AccountRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +15,10 @@ import java.util.Optional;
 @RestController
 public class AccountController {
 
+    @Autowired
     private AccountRepository accountRepository;
 
-    @GetMapping("/account/findAll")
+    @GetMapping("/account/findUsers")
     public ResponseEntity<?> getAllAccounts(){
         return new ResponseEntity<>(accountRepository.findByRole("USER"), HttpStatus.OK);
     }

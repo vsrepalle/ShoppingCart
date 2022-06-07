@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "wishlist")
-
 public class WishListController {
 
 	public WishListController(AccountRepository accountRepository, WishListRepository wishListRepository) {

@@ -54,9 +54,14 @@ public class RegisterController {
 			if (account.getPassword().equals(account.getConfirmPassword())) {
 					account.setPassword(passwordEncoder.encode(account.getPassword()));
 					accountRepository.save(AccountMapper.mapToAccount(account));
-					return new ResponseEntity<>("Account Registered", HttpStatus.CREATED);
+					if(account.getRole() != null) {
+						return new ResponseEntity<>("Account Registered", HttpStatus.CREATED);
+					}
+					else {
+						return new ResponseEntity<>("Enter role field to register",HttpStatus.BAD_REQUEST);
+					}
 			}
-			return new ResponseEntity<>("Password and ConfirmPassword are not same", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("Password and Confirm Password are not same", HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>("Email Already Exists Please Log In", HttpStatus.BAD_REQUEST);
 	}
