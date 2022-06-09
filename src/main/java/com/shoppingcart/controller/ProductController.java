@@ -4,8 +4,7 @@ import com.shoppingcart.entity.Product;
 import com.shoppingcart.entity.Rating;
 import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.service.ShoppingCartService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,7 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
-	private final Logger log = LoggerFactory.getLogger(ProductController.class);
+	private final Logger log = Logger.getLogger(ProductController.class.getName());
 
     @GetMapping(value = "products")
     public ResponseEntity<?> getAllProducts() {

@@ -10,7 +10,8 @@ import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private final Account account;
+    private static final long serialVersionUID = 1L;
+	private final Account account;
 
     public UserDetailsImpl(Account account){
        super();

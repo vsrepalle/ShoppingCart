@@ -37,7 +37,7 @@ public class WishListController {
 	@PostMapping(value = "/account/add/{accountId}")
 	public ResponseEntity<?> addWishList(@PathVariable("accountId") Integer accountId,
 			@RequestBody @Valid WishList wishListInReq) {
-		log.debug("Adding wishlist items with accountId{}",+accountId);
+		log.debug("Adding wishlist items with accountId {}",+accountId);
 
 		Optional<Account> account = accountRepository.findById(accountId);
 

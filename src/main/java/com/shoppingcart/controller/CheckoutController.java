@@ -4,8 +4,7 @@ import com.shoppingcart.entity.Order;
 import com.shoppingcart.entity.ShippingAddress;
 import com.shoppingcart.repository.OrderRepository;
 import com.shoppingcart.repository.ShippingAddressRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +24,13 @@ public class CheckoutController {
     private ShippingAddressRepository shippingAddressRepository;
     @Autowired
     private OrderRepository orderRepository;
-	private final Logger log = LoggerFactory.getLogger(CheckoutController.class);
+    private final Logger log = Logger.getLogger(CheckoutController.class);
 
 
     @PostMapping("/checkout/{shippingAddressId}")
     public ResponseEntity<?> checkout(@PathVariable("shippingAddressId") Integer shippingAddressId,
                                       @RequestBody Order order){
-    	log.debug("checking the shipping address and card details",+shippingAddressId);
+    	log.debug("checking the shipping address and card details with shippingAddressId "+shippingAddressId);
         Optional<ShippingAddress> shippingAddressOptional = shippingAddressRepository.findById(shippingAddressId);
         if(!shippingAddressOptional.isPresent()){
         	log.debug("Shipping Address is not found with id");

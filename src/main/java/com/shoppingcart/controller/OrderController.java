@@ -1,22 +1,22 @@
 package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Account;
+import com.shoppingcart.entity.Cart;
 import com.shoppingcart.entity.Order;
+import com.shoppingcart.entity.Product;
 import com.shoppingcart.repository.AccountRepository;
+import com.shoppingcart.repository.CartRepository;
 import com.shoppingcart.repository.OrderRepository;
+import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.service.ShoppingCartService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,30 +28,57 @@ public class OrderController {
 	@Autowired
 	private OrderRepository orderRepository;
 	@Autowired
+	private CartRepository cartRepository;
+	@Autowired
+	private ProductRepository productRepository;
+	@Autowired
 	private ShoppingCartService shoppingCartService;
-	
-	private final Logger log = LoggerFactory.getLogger(OrderController.class);
+
+	private final Logger log = Logger.getLogger(OrderController.class);
 
 	@PostMapping(value = "/account/addOrder/{accountId}")
 	public ResponseEntity<?> addOrder(@PathVariable("accountId") Integer accountId,
 			@RequestBody @Valid Order orderInReq) {
-		log.debug("adding orders with accountId{}",+accountId);
+		log.debug("adding orders with accountId "+accountId);
 
 		Optional<Account> account = accountRepository.findById(accountId);
 		if (account.isPresent()) {
 			Account accountObjInDB = account.get();
 			List<Order> orderList = accountObjInDB.getOrdersList();
 			orderInReq.setOrderId(java.util.UUID.randomUUID().toString());
-
+            orderInReq.setOrderStatus("PENDING");
+			orderInReq.setProducts(shoppingCartService.getProductsInCart(accountObjInDB.getCart().getCartId()));
+			orderInReq.setTotalPrice(calculateCartPrice(accountObjInDB.getCart().getCartId()));
+			orderInReq.setCartId(accountObjInDB.getCart().getCartId());
 			orderList.add(orderInReq);
 			accountObjInDB.setOrdersList(orderList);
 			accountRepository.save(accountObjInDB);
-			shoppingCartService.removeAllProductsFromCart(accountId);
-
+			shoppingCartService.removeAllProductsFromCart(accountObjInDB.getCart().getCartId());
 			return new ResponseEntity<>("Order Added Successfully and all products are removed from Cart", HttpStatus.CREATED);
 		}
 		return new ResponseEntity<>("Account Not Found With Id " + accountId, HttpStatus.NOT_FOUND);
 
+	}
+	@PostMapping(value = "/account/confirmOrder/{orderId}")
+	public ResponseEntity<?> confirmOrder(@PathVariable("orderId") String orderId){
+		Optional<Order> orderOptional = orderRepository.findById(orderId);
+		if(orderOptional.isPresent()){
+			Order order = orderOptional.get();
+			shoppingCartService.removeAllProductsFromCart(order.getCartId());
+			return new ResponseEntity<>("Confirmed Order with id "+orderId,HttpStatus.OK);
+		}
+		return new ResponseEntity<>("Order not found with id "+orderId,HttpStatus.NOT_FOUND);
+	}
+	private float calculateCartPrice(int cartId){
+       Optional<Cart> cart = cartRepository.findById(cartId);
+	   Map<Integer,Integer> productQuantityMap = cart.get().getProductQuantityMap();
+	   float result = 0F;
+	   for(Map.Entry<Integer,Integer> entry:productQuantityMap.entrySet()){
+		   Product product = productRepository.findById(entry.getKey()).get();
+		   float priceOfProduct = product.getPrice()*entry.getValue();
+		   result+=priceOfProduct;
+	   }
+	   return result;
 	}
 
 	@PostMapping(value = "/account/getOrdersInFutureDate")
@@ -69,7 +96,7 @@ public class OrderController {
 					% 365;
 			return order.getOrderStatus().equals("PENDING") && difference_In_Days <= 2;
 		}).collect(Collectors.toList());
-		return new ResponseEntity<>(orders, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(orders, HttpStatus.OK);
 
 	}
 
@@ -77,7 +104,7 @@ public class OrderController {
 	@GetMapping(value = "/account/filterOrdersByStatus/{accountId}/{status}")
 	public ResponseEntity<?> filterOrdersByStatus(@PathVariable("accountId") Integer accountId,
 			@PathVariable("status") String status) {
-		log.debug("checking the status of order {} with account {}",status,accountId);
+		log.debug("checking the status of order with "+status+" and with accountId "+accountId);
 
 		Optional<Account> account = accountRepository.findById(accountId);
 
@@ -98,7 +125,7 @@ public class OrderController {
 	}
 	@GetMapping(value="/account/listOrders/{accountId}")
 	public ResponseEntity<?> listOfOrders(@PathVariable("accountId") Integer accountId){
-		log.debug("showing the list of orders with accountId {}",+accountId);
+		log.debug("showing the list of orders with accountId "+accountId);
 		Optional<Account> account = accountRepository.findById(accountId);
 		if(account.isPresent()) {
 			if(account.get().getOrdersList().isEmpty()) {
@@ -111,7 +138,7 @@ public class OrderController {
 
 	@GetMapping(value = "/account/returnOrder/{orderId}")
 	public ResponseEntity<?> returnOrder(@PathVariable("orderId") String orderId) {
-		log.debug("order was taking return with orderId{}",orderId);
+		log.debug("order was taking return with orderId "+orderId);
 
 		Optional<Order> orderInDB = orderRepository.findById(orderId);
 		if (orderInDB.isPresent()) {
@@ -139,7 +166,7 @@ public class OrderController {
 
 	@DeleteMapping(value = "/account/cancelOrder/{orderId}")
 	public ResponseEntity<?> cancelOrder(@PathVariable("orderId") String orderId) {
-		log.debug("order cancel with orderId{}",orderId);
+		log.debug("order cancelling with orderId "+orderId);
 
 		Optional<Order> orderInDB = orderRepository.findById(orderId);
 		if (orderInDB.isPresent()) {

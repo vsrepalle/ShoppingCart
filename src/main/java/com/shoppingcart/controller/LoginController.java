@@ -3,8 +3,7 @@ package com.shoppingcart.controller;
 import com.shoppingcart.entity.Account;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.request.AccountRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,19 +17,18 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "account")
-
 public class LoginController {
 	@Autowired
 	private AccountRepository accountRepository;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	private final Logger log = LoggerFactory.getLogger(LoginController.class);
+
+	private final Logger log = Logger.getLogger(LoginController.class);
 
 
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> login(@RequestBody AccountRequest account) {
-		log.debug("registered user should be login",account);
+		log.debug("registered user should login");
 		String accountName = account.getName();
 		if (null != accountName && accountName.isEmpty()) {
 			return new ResponseEntity<>("User Name is not entered", HttpStatus.BAD_REQUEST);

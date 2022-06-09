@@ -121,6 +121,16 @@ public class Order {
 
 	private String orderStatus;
 
+	public Integer getCartId() {
+		return cartId;
+	}
+
+	public void setCartId(Integer cartId) {
+		this.cartId = cartId;
+	}
+
+	private Integer cartId;
+
 	@OneToMany
 	private List<Product> products;
 

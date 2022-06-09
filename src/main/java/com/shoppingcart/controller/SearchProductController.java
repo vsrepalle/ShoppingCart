@@ -2,8 +2,7 @@ package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Product;
 import com.shoppingcart.repository.ProductRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,19 +20,19 @@ public class SearchProductController {
 
 	@Autowired
 	private ProductRepository productRepository;
-	
-	private final Logger log = LoggerFactory.getLogger(SearchProductController.class);
+
+	private final Logger log = Logger.getLogger(ProductController.class);
 
 
 	@GetMapping(value = "/productByName/{prodName}")
 	public ResponseEntity<?> getProductByName(@PathVariable String prodName) {
-		log.debug("search by product productByName prodName{}",prodName);
+		log.debug("search by product with name "+prodName);
 		try {
 			List<Product> product = productRepository.findByProductName(prodName);
 
 			if (product == null) {
 				log.debug("product is empty");
-				return new ResponseEntity<>("No Product is found with product name :" + prodName, HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("No Product is found with product name " + prodName, HttpStatus.NOT_FOUND);
 			}
 
 			return new ResponseEntity<>(product, HttpStatus.FOUND);
@@ -45,13 +44,13 @@ public class SearchProductController {
 
 	@GetMapping(value = "/productById/{prodId}")
 	public ResponseEntity<?> getProductById(@PathVariable Integer prodId) {
-		log.debug("search by product with productById",prodId);
+		log.debug("search with product by id "+prodId);
 		try {
 
 			Optional<Product> product = productRepository.findById(prodId);
 
 			if (!product.isPresent()) {
-				log.debug("product not found by Id");
+				log.debug("product not found by id "+prodId);
 				return new ResponseEntity<>("No Product is found with product with ID :" + prodId, HttpStatus.NOT_FOUND);
 			}
 

@@ -1,7 +1,6 @@
 package com.shoppingcart.service;
 
 import com.shoppingcart.entity.Cart;
-import com.shoppingcart.entity.Item;
 import com.shoppingcart.entity.Product;
 import com.shoppingcart.exception.EmptyListOfProductsException;
 import com.shoppingcart.exception.InvalidQuantityException;

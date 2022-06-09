@@ -2,7 +2,6 @@ package com.shoppingcart.service.impl;
 
 import com.shoppingcart.entity.Account;
 import com.shoppingcart.entity.Cart;
-import com.shoppingcart.entity.Item;
 import com.shoppingcart.entity.Product;
 import com.shoppingcart.exception.EmptyListOfProductsException;
 import com.shoppingcart.exception.InvalidQuantityException;
@@ -75,7 +74,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 			int initialQuantity = cart.getProductQuantityMap().get(productId);
 			cart.getProductQuantityMap().replace(productId, initialQuantity+1);
 		} catch (ProductNotPresentInCartException e) {
-			cart.getProductQuantityMap().put(productId,1);
+			throw new NoSuchProductException();
 		}
 		cart.setCartPrice(this.calculateCartPrice(cart,productId,1));
 		return cartRepository.save(cart);
@@ -85,7 +84,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	@Override
 	public Cart updateProductQuantityInCart(int cartId, int productId, int quantity)
 			throws ProductNotPresentInCartException, InvalidQuantityException {
-		log.debug("updating product with id {} in cart with id{} in quantity{}",cartId,productId,quantity);
+		log.debug("updating product with id {} in cart with id {} in quantity {}",productId,cartId,quantity);
 		Cart cart = cartRepository.findById(cartId).get();
 		this.checkProductInCart(cart, productId);
 			int modifiedQuantity = quantity-cart.getProductQuantityMap().get(productId);

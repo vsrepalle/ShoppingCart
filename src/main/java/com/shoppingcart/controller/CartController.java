@@ -1,11 +1,9 @@
 package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Cart;
-import com.shoppingcart.entity.Item;
 import com.shoppingcart.entity.Product;
 import com.shoppingcart.service.ShoppingCartService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,7 @@ public class CartController {
 
 	@Autowired
 	private ShoppingCartService shoppingCartService;
-	private final Logger log = LoggerFactory.getLogger(CartController.class);
+	private final Logger log = Logger.getLogger(CartController.class);
 
 
 	@GetMapping(value = "/{accountId}/cart")
