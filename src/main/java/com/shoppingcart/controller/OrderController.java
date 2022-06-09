@@ -47,7 +47,6 @@ public class OrderController {
 			List<Order> orderList = accountObjInDB.getOrdersList();
 			orderInReq.setOrderId(java.util.UUID.randomUUID().toString());
             orderInReq.setOrderStatus("PENDING");
-			orderInReq.setProducts(shoppingCartService.getProductsInCart(accountObjInDB.getCart().getCartId()));
 			orderInReq.setTotalPrice(calculateCartPrice(accountObjInDB.getCart().getCartId()));
 			orderInReq.setCartId(accountObjInDB.getCart().getCartId());
 			orderList.add(orderInReq);
@@ -64,6 +63,12 @@ public class OrderController {
 		Optional<Order> orderOptional = orderRepository.findById(orderId);
 		if(orderOptional.isPresent()){
 			Order order = orderOptional.get();
+			Optional<Cart> cart = cartRepository.findById(order.getCartId());
+			for(Map.Entry<Integer,Integer> entry:cart.get().getProductQuantityMap().entrySet()){
+				Product product = productRepository.findById(entry.getKey()).get();
+				product.setStockQty(product.getStockQty()-entry.getValue());
+				productRepository.save(product);
+			}
 			shoppingCartService.removeAllProductsFromCart(order.getCartId());
 			return new ResponseEntity<>("Confirmed Order with id "+orderId,HttpStatus.OK);
 		}
