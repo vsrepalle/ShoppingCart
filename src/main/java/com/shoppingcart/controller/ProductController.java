@@ -1,7 +1,9 @@
 package com.shoppingcart.controller;
 
+import com.shoppingcart.entity.Account;
 import com.shoppingcart.entity.Product;
 import com.shoppingcart.entity.Rating;
+import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.service.ShoppingCartService;
 import org.apache.log4j.Logger;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +25,8 @@ public class ProductController {
     private ShoppingCartService shoppingCartService;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
 	private final Logger log = Logger.getLogger(ProductController.class.getName());
 
@@ -108,14 +114,17 @@ public class ProductController {
     }
 
     @PutMapping("product/rate/{productId}")
-    public ResponseEntity<?> rateProduct(@PathVariable("productId") Integer productId, @RequestBody Rating rating) {
+    public ResponseEntity<?> rateProduct(@PathVariable("productId") Integer productId, @RequestBody Rating rating,@RequestHeader("Authorization") String authorization) {
+        String[] credentials = getCredentials(authorization);
+        Optional<Account> accountOptional = accountRepository.findByEmail(credentials[0]);
+        int userId=accountOptional.get().getId();
         Optional<Product> productOptional = productRepository.findById(productId);
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
+            rating.setUserId(userId);
             Rating ratingInDB = product.getRating();
             if (ratingInDB != null) {
                 ratingInDB.setRating(rating.getRating());
-                ratingInDB.setRatingId(rating.getRatingId());
                 ratingInDB.setUserId(rating.getUserId());
                 ratingInDB.setRemarks(rating.getRemarks());
                 product.setRating(ratingInDB);
@@ -128,6 +137,19 @@ public class ProductController {
         }
         log.error("Product Not Found With Id " + productId);
         return new ResponseEntity<>("Product Not Found With Id " + productId, HttpStatus.OK);
+    }
+
+    private String[] getCredentials(String authorization) {
+        if (authorization != null && authorization.toLowerCase().startsWith("basic")) {
+            // Authorization: Basic base64credentials
+            String base64Credentials = authorization.substring("Basic".length()).trim();
+            byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+            String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+            // credentials = username:password
+            final String[] values = credentials.split(":", 2);
+            return values;
+        }
+        return null;
     }
 
     @GetMapping("/product/lowStockProduct")

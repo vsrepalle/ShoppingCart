@@ -10,6 +10,11 @@ public class Account {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
+
+	public Integer getId() {
+		return id;
+	}
+
 	@Column(nullable = false)
 	private String name;
 	@OneToOne(cascade = CascadeType.ALL)
