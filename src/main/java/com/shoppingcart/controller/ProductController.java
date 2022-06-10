@@ -7,7 +7,6 @@ import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.repository.RatingRepository;
 import com.shoppingcart.service.ShoppingCartService;
-import org.apache.catalina.Store;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -114,7 +113,7 @@ public class ProductController {
 
     @GetMapping("/product/topRated")
     public ResponseEntity<?> topRated() {
-        return new ResponseEntity<>(productRepository.findByOrderByRating_RatingDesc().stream().limit(10).collect(Collectors.toList()), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(ratingRepository.findByRatingOrderByRatingDesc().stream().limit(10).collect(Collectors.toList()), HttpStatus.ACCEPTED);
     }
 
     @PutMapping("product/rate/{productId}")
