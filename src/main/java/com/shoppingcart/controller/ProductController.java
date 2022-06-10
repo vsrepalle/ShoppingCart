@@ -5,7 +5,9 @@ import com.shoppingcart.entity.Product;
 import com.shoppingcart.entity.Rating;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.ProductRepository;
+import com.shoppingcart.repository.RatingRepository;
 import com.shoppingcart.service.ShoppingCartService;
+import org.apache.catalina.Store;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,8 @@ public class ProductController {
     private AccountRepository accountRepository;
 
 	private final Logger log = Logger.getLogger(ProductController.class.getName());
+    @Autowired
+    private RatingRepository ratingRepository;
 
     @GetMapping(value = "products")
     public ResponseEntity<?> getAllProducts() {
@@ -122,17 +126,21 @@ public class ProductController {
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
             rating.setUserId(userId);
-            Rating ratingInDB = product.getRating();
-            if (ratingInDB != null) {
-                ratingInDB.setRating(rating.getRating());
-                ratingInDB.setUserId(rating.getUserId());
-                ratingInDB.setRemarks(rating.getRemarks());
-                product.setRating(ratingInDB);
-            } else {
-                product.setRating(rating);
+            List<Rating> ratings = product.getRatings();
+            if(ratings.stream().anyMatch(ratingFromDB -> ratingFromDB.getUserId()==userId)){
+                Rating ratingAlreadyExistsWithUserId = ratings.stream().filter(ratingFromDB -> ratingFromDB.getUserId()==userId)
+                        .collect(Collectors.toList())
+                        .get(0);
+                ratingAlreadyExistsWithUserId.setRating(rating.getRating());
+                ratingAlreadyExistsWithUserId.setRemarks(rating.getRemarks());
+                ratingRepository.save(ratingAlreadyExistsWithUserId);
+                log.debug("Product rating Updated Successfully with id " + productId);
+                return new ResponseEntity<>("Product Rating Updated Successfully",HttpStatus.OK);
             }
-            log.debug("Product rating Updated Successfully with id " + productId);
+            ratings.add(rating);
+            product.setRatings(ratings);
             productRepository.save(product);
+            log.debug("Product rating Updated Successfully with id " + productId);
             return new ResponseEntity<>("Product rating Updated Successfully", HttpStatus.OK);
         }
         log.error("Product Not Found With Id " + productId);
@@ -140,7 +148,6 @@ public class ProductController {
     }
 
     private String[] getCredentials(String authorization) {
-        if (authorization != null && authorization.toLowerCase().startsWith("basic")) {
             // Authorization: Basic base64credentials
             String base64Credentials = authorization.substring("Basic".length()).trim();
             byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
@@ -148,8 +155,6 @@ public class ProductController {
             // credentials = username:password
             final String[] values = credentials.split(":", 2);
             return values;
-        }
-        return null;
     }
 
     @GetMapping("/product/lowStockProduct")

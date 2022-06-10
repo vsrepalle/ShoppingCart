@@ -1,6 +1,7 @@
 package com.shoppingcart.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Product {
@@ -31,17 +32,17 @@ public class Product {
 		this.stockQty = stockQty;
 	}
 
-	public Rating getRating() {
-		return rating;
+
+	public List<Rating> getRatings() {
+		return ratings;
 	}
 
-	public void setRating(Rating rating) {
-		this.rating = rating;
+	public void setRatings(List<Rating> ratings) {
+		this.ratings = ratings;
 	}
 
-
-	@OneToOne(cascade = CascadeType.ALL)
-	private Rating rating;
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Rating> ratings;
 
 	@Column
 	private int stockQty;
