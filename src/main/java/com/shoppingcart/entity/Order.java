@@ -103,8 +103,18 @@ public class Order {
 		this.orderStatus = orderStatus;
 	}
 
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
 	private String displayName;
-	
+
+	private Integer userId;
+
 	private String category;
 	
 	private String sellerName;

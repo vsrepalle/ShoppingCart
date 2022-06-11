@@ -1,5 +1,6 @@
 package com.shoppingcart.controller;
 
+import com.shoppingcart.dto.OrderDTO;
 import com.shoppingcart.entity.Account;
 import com.shoppingcart.entity.Cart;
 import com.shoppingcart.entity.Order;
@@ -47,6 +48,7 @@ public class OrderController {
 			List<Order> orderList = accountObjInDB.getOrdersList();
 			orderInReq.setOrderId(java.util.UUID.randomUUID().toString());
             orderInReq.setOrderStatus("PENDING");
+			orderInReq.setUserId(accountId);
 			if(accountObjInDB.getCart() == null){
 				return new ResponseEntity<>("There are no products in cart",HttpStatus.EXPECTATION_FAILED);
 			}
@@ -104,7 +106,14 @@ public class OrderController {
 					% 365;
 			return order.getOrderStatus().equals("PENDING") && difference_In_Days <= 2;
 		}).collect(Collectors.toList());
-		return new ResponseEntity<>(orders, HttpStatus.OK);
+		List<OrderDTO> orderDTOList = orders.stream()
+				.map(order -> {
+					OrderDTO orderDTO = new OrderDTO();
+					orderDTO.setOrder(order);
+					orderDTO.setAccount(accountRepository.findById(order.getUserId()).get());
+					return orderDTO;
+				}).collect(Collectors.toList());
+		return new ResponseEntity<>(orderDTOList, HttpStatus.OK);
 
 	}
 
