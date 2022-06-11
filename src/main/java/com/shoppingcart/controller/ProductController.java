@@ -7,14 +7,14 @@ import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.repository.RatingRepository;
 import com.shoppingcart.service.ShoppingCartService;
+import com.shoppingcart.utils.AccountUtil;
+import com.shoppingcart.utils.BasicAuthenticationUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +28,8 @@ public class ProductController {
     private ProductRepository productRepository;
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private AccountUtil accountUtil;
 
 	private final Logger log = Logger.getLogger(ProductController.class.getName());
     @Autowired
@@ -118,11 +120,9 @@ public class ProductController {
 
     @PutMapping("product/rate/{productId}")
     public ResponseEntity<?> rateProduct(@PathVariable("productId") Integer productId, @RequestBody Rating rating,@RequestHeader("Authorization") String authorization) {
-        String[] credentials = getCredentials(authorization);
-        Optional<Account> accountOptional = accountRepository.findByEmail(credentials[0]);
-        int userId=accountOptional.get().getId();
         Optional<Product> productOptional = productRepository.findById(productId);
         if (productOptional.isPresent()) {
+            int userId=accountUtil.getAccount(BasicAuthenticationUtil.getCredentials(authorization)).getId();
             Product product = productOptional.get();
             rating.setUserId(userId);
             List<Rating> ratings = product.getRatings();
@@ -146,15 +146,7 @@ public class ProductController {
         return new ResponseEntity<>("Product Not Found With Id " + productId, HttpStatus.OK);
     }
 
-    private String[] getCredentials(String authorization) {
-            // Authorization: Basic base64credentials
-            String base64Credentials = authorization.substring("Basic".length()).trim();
-            byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-            String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-            // credentials = username:password
-            final String[] values = credentials.split(":", 2);
-            return values;
-    }
+
 
     @GetMapping("/product/lowStockProduct")
     public ResponseEntity<?> getLowStockProduct() {

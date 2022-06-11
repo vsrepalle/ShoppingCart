@@ -2,6 +2,7 @@ package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Cart;
 import com.shoppingcart.entity.Product;
+import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.service.ShoppingCartService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,10 @@ import java.util.List;
 @RequestMapping(value = "users")
 
 public class CartController {
-
 	@Autowired
 	private ShoppingCartService shoppingCartService;
+	@Autowired
+	private AccountRepository accountRepository;
 	private final Logger log = Logger.getLogger(CartController.class);
 
 
@@ -53,7 +55,8 @@ public class CartController {
 		log.debug("adding products in cart with accountId "+accountId+" and productId "+productId);
 		try {
 			shoppingCartService.checkProduct(productId);
-			Cart cart = shoppingCartService.addProductInCart(accountId, productId);
+			Cart cart = shoppingCartService
+					.addProductInCart(accountRepository.findById(accountId).get().getCart().getCartId(), productId);
 			return new ResponseEntity<>(cart, HttpStatus.ACCEPTED);
 		} catch(Exception e) {
 			log.error(e.getMessage(),e);
