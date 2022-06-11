@@ -10,6 +10,7 @@ public class AccountMapper {
         account.setEmail(accountRequest.getEmail());
         account.setName(accountRequest.getName());
         account.setRole(accountRequest.getRole());
+        account.setCart(accountRequest.getCart());
         return account;
     }
 }

@@ -1,5 +1,6 @@
 package com.shoppingcart.controller;
 
+import com.shoppingcart.entity.Account;
 import com.shoppingcart.entity.Cart;
 import com.shoppingcart.entity.Product;
 import com.shoppingcart.repository.AccountRepository;
@@ -55,8 +56,9 @@ public class CartController {
 		log.debug("adding products in cart with accountId "+accountId+" and productId "+productId);
 		try {
 			shoppingCartService.checkProduct(productId);
+			Account account=accountRepository.findById(accountId).get();
 			Cart cart = shoppingCartService
-					.addProductInCart(accountRepository.findById(accountId).get().getCart().getCartId(), productId);
+					.addProductInCart(account.getCart().getCartId(), productId);
 			return new ResponseEntity<>(cart, HttpStatus.ACCEPTED);
 		} catch(Exception e) {
 			log.error(e.getMessage(),e);

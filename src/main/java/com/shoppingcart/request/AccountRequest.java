@@ -1,11 +1,24 @@
 package com.shoppingcart.request;
 
+import com.shoppingcart.entity.Cart;
+
 public class AccountRequest {
     private String name;
     private String password;
     private String confirmPassword;
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
     private String email;
     private String role;
+
+    private Cart cart;
 
     public String getName() {
         return name;

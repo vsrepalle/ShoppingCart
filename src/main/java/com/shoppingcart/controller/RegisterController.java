@@ -1,6 +1,7 @@
 package com.shoppingcart.controller;
 
 import com.shoppingcart.entity.Account;
+import com.shoppingcart.entity.Cart;
 import com.shoppingcart.mapper.AccountMapper;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.request.AccountRequest;
@@ -51,6 +52,7 @@ public class RegisterController {
 
 			if (account.getPassword().equals(account.getConfirmPassword())) {
 					account.setPassword(passwordEncoder.encode(account.getPassword()));
+					account.setCart(new Cart());
 					accountRepository.save(AccountMapper.mapToAccount(account));
 					if(account.getRole() != null) {
 						return new ResponseEntity<>("Account Registered", HttpStatus.CREATED);
