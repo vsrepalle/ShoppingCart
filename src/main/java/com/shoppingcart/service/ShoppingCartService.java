@@ -16,7 +16,7 @@ public interface ShoppingCartService {
 	 * 
 	 */
 	List<Product> getProductsInCart(int cartId);
-	Cart addProductInCart(int cartId, int productId);
+	Cart addProductInCart(int cartId, int productId,int quantity);
 	Cart updateProductQuantityInCart(int cartId, int productId,int quantity) throws ProductNotPresentInCartException, InvalidQuantityException;
 	Cart removeProductFromCart(int cartId, int productId) throws ProductNotPresentInCartException; 
 	Cart removeAllProductsFromCart(int cartId);

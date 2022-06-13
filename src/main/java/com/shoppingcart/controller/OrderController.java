@@ -35,7 +35,7 @@ public class OrderController {
 	@Autowired
 	private ShoppingCartService shoppingCartService;
 
-	private final Logger log = Logger.getLogger(OrderController.class);
+	private final Logger log = Logger.getLogger(OrderController.class.getName());
 
 	@PostMapping(value = "/account/addOrder/{accountId}")
 	public ResponseEntity<?> addOrder(@PathVariable("accountId") Integer accountId,

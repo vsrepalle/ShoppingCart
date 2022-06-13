@@ -1,6 +1,5 @@
 package com.shoppingcart.controller;
 
-import com.shoppingcart.entity.Account;
 import com.shoppingcart.entity.Product;
 import com.shoppingcart.entity.Rating;
 import com.shoppingcart.repository.AccountRepository;

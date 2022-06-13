@@ -66,13 +66,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
 
 	@Override
-	public Cart addProductInCart(int cartId, int productId) {
+	public Cart addProductInCart(int cartId, int productId,int quantity) {
 		log.debug("Adding Product with id {} in cart with id {}",productId,cartId);
 		Cart cart = cartRepository.findById(cartId).get();
 		try {
-			this.checkProductInCart(cart, productId);
-			int initialQuantity = cart.getProductQuantityMap().get(productId);
-			cart.getProductQuantityMap().replace(productId, initialQuantity+1);
+			Map<Integer,Integer> productQuantityMap = cart.getProductQuantityMap();
+			productQuantityMap.put(productId, quantity);
+			cart.setProductQuantityMap(productQuantityMap);
 		} catch (ProductNotPresentInCartException e) {
 			throw new NoSuchProductException();
 		}
@@ -89,8 +89,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		this.checkProductInCart(cart, productId);
 			int modifiedQuantity = quantity-cart.getProductQuantityMap().get(productId);
 			if(quantity == 0) {
+				Map<Integer,Integer> productQuantityMap = cart.getProductQuantityMap();
+				productQuantityMap.replace(productId,quantity);
+				cart.setProductQuantityMap(productQuantityMap);
 				cart.setCartPrice(this.calculateCartPrice(cart, productId, quantity));
-				cart.getProductQuantityMap().remove(productId);
 			}
 			else if(quantity<0) {
 				throw new InvalidQuantityException();
@@ -109,8 +111,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		Cart cart = cartRepository.findById(cartId).get();
 		this.checkProductInCart(cart, productId); //check if product is present in cart
 		int quantity = cart.getProductQuantityMap().get(productId);
-		cart.setCartPrice(this.calculateCartPrice(cart, productId, -quantity));
-		cart.getProductQuantityMap().remove(productId);
+		Map<Integer,Integer> productQuantityMap = cart.getProductQuantityMap();
+		productQuantityMap.remove(productId);
+		cart.setProductQuantityMap(productQuantityMap);
+		cart.setCartPrice(this.calculateCartPrice(cart, productId, quantity));
 		return cartRepository.save(cart);
 	}
 

@@ -38,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/product/add/**","/product/update/{productId}/**","/product/delete/{productId}/**",
                                         "/product/topRated/**","/account/findUsers/**","/account/makeAdmin/{accountId}/**",
-                                        "/product/lowStockProduct/**","/account/getOrdersInFutureDate/**")
+                                        "/product/lowStockProduct/**","/account/getOrdersInFutureDate/**","/account/confirmOrder/{orderId}")
                 .hasAuthority("ADMIN")
                 .antMatchers("/users/{accountId}/cart/**","/products/**", "/wishlist/account/**",
                                         "/product/**","/orders/**","/checkout/{shippingAddressId}",

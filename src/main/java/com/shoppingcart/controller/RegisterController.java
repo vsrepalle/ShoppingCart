@@ -47,14 +47,13 @@ public class RegisterController {
 					account.getName().isEmpty() || account.getEmail().isEmpty() || account.getPassword().isEmpty() ||
 					account.getConfirmPassword().isEmpty()) {
 				return new ResponseEntity<>("All fields are required", HttpStatus.BAD_REQUEST);
-
 			}
 
 			if (account.getPassword().equals(account.getConfirmPassword())) {
 					account.setPassword(passwordEncoder.encode(account.getPassword()));
 					account.setCart(new Cart());
-					accountRepository.save(AccountMapper.mapToAccount(account));
 					if(account.getRole() != null) {
+						accountRepository.save(AccountMapper.mapToAccount(account));
 						return new ResponseEntity<>("Account Registered", HttpStatus.CREATED);
 					}
 					else {

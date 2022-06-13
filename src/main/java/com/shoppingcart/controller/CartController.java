@@ -52,13 +52,14 @@ public class CartController {
 	@PostMapping(value = "/{accountId}/cart/products")
 	public ResponseEntity<?> addProductInCart(
 			@PathVariable("accountId") int accountId, 
-			@RequestParam int productId){
+			@RequestParam int productId,
+	        @RequestParam int quantity){
 		log.debug("adding products in cart with accountId "+accountId+" and productId "+productId);
 		try {
 			shoppingCartService.checkProduct(productId);
 			Account account=accountRepository.findById(accountId).get();
 			Cart cart = shoppingCartService
-					.addProductInCart(account.getCart().getCartId(), productId);
+					.addProductInCart(account.getCart().getCartId(), productId,quantity);
 			return new ResponseEntity<>(cart, HttpStatus.ACCEPTED);
 		} catch(Exception e) {
 			log.error(e.getMessage(),e);
