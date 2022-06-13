@@ -123,7 +123,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	public Cart removeAllProductsFromCart(int cartId) {
 		log.debug("removing all products form cart Id{}",cartId);
 		Cart cart = cartRepository.findById(cartId).get();
-		cart.getProductQuantityMap().clear();
+		Map<Integer,Integer> productQuantityMap = cart.getProductQuantityMap();
+		productQuantityMap.clear();
+		cart.setProductQuantityMap(productQuantityMap);
 		cart.setCartPrice(0);
 		return cartRepository.save(cart);
 	}
