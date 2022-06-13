@@ -53,11 +53,10 @@ public class OrderController {
 				return new ResponseEntity<>("There are no products in cart",HttpStatus.EXPECTATION_FAILED);
 			}
 			orderInReq.setTotalPrice(calculateCartPrice(accountObjInDB.getCart().getCartId()));
-			orderInReq.setCartId(accountObjInDB.getCart().getCartId());
+			orderInReq.setProductQuantityMap(accountObjInDB.getCart().getProductQuantityMap());
 			orderList.add(orderInReq);
 			accountObjInDB.setOrdersList(orderList);
 			accountRepository.save(accountObjInDB);
-			shoppingCartService.removeAllProductsFromCart(accountObjInDB.getCart().getCartId());
 			return new ResponseEntity<>("Order Added Successfully and all products are removed from Cart", HttpStatus.CREATED);
 		}
 		return new ResponseEntity<>("Account Not Found With Id " + accountId, HttpStatus.NOT_FOUND);
@@ -68,13 +67,11 @@ public class OrderController {
 		Optional<Order> orderOptional = orderRepository.findById(orderId);
 		if(orderOptional.isPresent()){
 			Order order = orderOptional.get();
-			Optional<Cart> cart = cartRepository.findById(order.getCartId());
-			for(Map.Entry<Integer,Integer> entry:cart.get().getProductQuantityMap().entrySet()){
+			for(Map.Entry<Integer,Integer> entry:order.getProductQuantityMap().entrySet()){
 				Product product = productRepository.findById(entry.getKey()).get();
 				product.setStockQty(product.getStockQty()-entry.getValue());
 				productRepository.save(product);
 			}
-			shoppingCartService.removeAllProductsFromCart(order.getCartId());
 			return new ResponseEntity<>("Confirmed Order with id "+orderId,HttpStatus.OK);
 		}
 		return new ResponseEntity<>("Order not found with id "+orderId,HttpStatus.NOT_FOUND);

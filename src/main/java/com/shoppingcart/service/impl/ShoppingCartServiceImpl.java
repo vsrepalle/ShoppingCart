@@ -70,7 +70,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		log.debug("Adding Product with id {} in cart with id {}",productId,cartId);
 		Cart cart = cartRepository.findById(cartId).get();
 		try {
+			Product product=productRepository.findById(productId).get();
 			Map<Integer,Integer> productQuantityMap = cart.getProductQuantityMap();
+			if(product.getStockQty() < quantity){
+				throw new RuntimeException("product quantity is less than provided quantity");
+			}
 			productQuantityMap.put(productId, quantity);
 			cart.setProductQuantityMap(productQuantityMap);
 		} catch (ProductNotPresentInCartException e) {

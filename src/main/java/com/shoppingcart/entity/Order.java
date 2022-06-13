@@ -1,9 +1,8 @@
 package com.shoppingcart.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.Map;
 
 @Entity
 @Table(name= "order_new")
@@ -129,13 +128,19 @@ public class Order {
 
 	private String orderStatus;
 
-	public Integer getCartId() {
-		return cartId;
+	public Map<Integer, Integer> getProductQuantityMap() {
+		return productQuantityMap;
 	}
 
-	public void setCartId(Integer cartId) {
-		this.cartId = cartId;
+	public void setProductQuantityMap(Map<Integer, Integer> productQuantityMap) {
+		this.productQuantityMap = productQuantityMap;
 	}
 
-	private Integer cartId;
+	@ElementCollection
+	@CollectionTable(name = "order_quantity_mapping",
+			joinColumns = {@JoinColumn(name = "orderId")})
+	@MapKeyJoinColumn(name = "product_id")
+	@Column(name = "Quantity")
+	private Map<Integer, Integer> productQuantityMap;
+
 }
