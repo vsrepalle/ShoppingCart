@@ -6,6 +6,7 @@ import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.request.AccountRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -44,6 +45,7 @@ class RegisterControllerTest {
     }
 
     @Test
+    @DisplayName("Register an Account")
     void register() throws Exception {
         AccountRequest accountRequest = new AccountRequest();
         accountRequest.setName("Nani");

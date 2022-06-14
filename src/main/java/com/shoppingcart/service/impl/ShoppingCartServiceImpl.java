@@ -13,7 +13,6 @@ import com.shoppingcart.repository.ProductRepository;
 import com.shoppingcart.service.ShoppingCartService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,17 +21,19 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
-	@Autowired
-	private ProductRepository productRepository;
-	@Autowired
-	private CartRepository cartRepository;
-	@Autowired
-	private AccountRepository accountRepository;
+	private final ProductRepository productRepository;
+	private final CartRepository cartRepository;
+	private final AccountRepository accountRepository;
 	
 	private final Logger log = LoggerFactory.getLogger(ShoppingCartServiceImpl.class);
+
+	public ShoppingCartServiceImpl(ProductRepository productRepository, CartRepository cartRepository, AccountRepository accountRepository) {
+		this.productRepository = productRepository;
+		this.cartRepository = cartRepository;
+		this.accountRepository = accountRepository;
+	}
 
 
 	@Override
