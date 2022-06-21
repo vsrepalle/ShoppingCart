@@ -10,6 +10,7 @@ import com.shoppingcart.utils.AccountUtil;
 import com.shoppingcart.utils.BasicAuthenticationUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

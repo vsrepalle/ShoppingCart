@@ -124,14 +124,12 @@ public class Product {
 				return false;
 		} else if (!category.equals(other.category))
 			return false;
-		if (Float.floatToIntBits(price) != Float.floatToIntBits(other.price))
+		if (price == other.getPrice())
 			return false;
 		if (prodName == null) {
 			if (other.prodName != null)
 				return false;
 		} else if (!prodName.equals(other.prodName))
-			return false;
-		if (productId != other.productId)
 			return false;
 		return true;
 	}
