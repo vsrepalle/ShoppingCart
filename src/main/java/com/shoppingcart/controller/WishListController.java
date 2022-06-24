@@ -4,7 +4,6 @@ import com.shoppingcart.entity.Account;
 import com.shoppingcart.entity.WishList;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.WishListRepository;
-import com.shoppingcart.utils.AccountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +20,15 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "wishlist")
 public class WishListController {
 
-	public WishListController(AccountRepository accountRepository, WishListRepository wishListRepository, AccountUtil accountUtil) {
+	public WishListController(AccountRepository accountRepository, WishListRepository wishListRepository) {
 		this.accountRepository = accountRepository;
 		this.wishListRepository = wishListRepository;
-		this.accountUtil = accountUtil;
 	}
 	@Autowired
 	private final AccountRepository accountRepository;
 	@Autowired
 	private final WishListRepository wishListRepository;
-	@Autowired
-	private final AccountUtil accountUtil;
+
 	
 	private final Logger log = LoggerFactory.getLogger(WishListController.class);
 
