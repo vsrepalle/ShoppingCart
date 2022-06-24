@@ -7,6 +7,20 @@ import java.util.List;
 @Entity
 public class Account {
 
+	public Account(String name, Cart cart, List<WishList> wishList, String password, String email, List<Order> ordersList, String role, ShippingAddress shippingAddress) {
+		this.name = name;
+		this.cart = cart;
+		this.wishList = wishList;
+		this.password = password;
+		this.email = email;
+		this.ordersList = ordersList;
+		this.role = role;
+		this.shippingAddress = shippingAddress;
+	}
+
+	public Account() {
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;

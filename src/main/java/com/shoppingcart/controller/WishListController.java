@@ -5,7 +5,6 @@ import com.shoppingcart.entity.WishList;
 import com.shoppingcart.repository.AccountRepository;
 import com.shoppingcart.repository.WishListRepository;
 import com.shoppingcart.utils.AccountUtil;
-import com.shoppingcart.utils.BasicAuthenticationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +40,10 @@ public class WishListController {
 
 	@PostMapping(value = "/account/add/{accountId}")
 	public ResponseEntity<?> addWishList(@RequestBody @Valid WishList wishListInReq,
-										 @RequestHeader("Authorization") String authorization) {
-		Account account = accountUtil.getAccount(BasicAuthenticationUtil.getCredentials(authorization));
-		Integer accountId = account.getId();
-		log.debug("Adding wishlist items with accountId {}",+accountId);
-
-		if (account != null) {
+										 @PathVariable("accountId") Integer accountId) {
+        Optional<Account> accountOptional = accountRepository.findById(accountId);
+		if (accountOptional.isPresent()) {
+			Account account = accountOptional.get();
 			log.debug("account is present");
 			List<WishList> wishList = account.getWishList();
 			wishList.add(wishListInReq);
@@ -60,13 +57,8 @@ public class WishListController {
 
 	@PutMapping(value = "/account/update/{wishListId}")
 	public ResponseEntity<?> updateWishList(@PathVariable("wishListId") Integer wishListId,
-											@RequestBody @Valid WishList wishListInReq,
-											@RequestHeader("Authorization") String authorization) {
-		Account account = accountUtil.getAccount(BasicAuthenticationUtil.getCredentials(authorization));
+											@RequestBody @Valid WishList wishListInReq) {
 		log.debug("updating wishlist with wishListId {}",wishListId);
-		if(!account.getWishList().stream().anyMatch(wishList -> wishList.getWishId()==wishListId)){
-			return new ResponseEntity<>("You cannot update others wishlist",HttpStatus.FORBIDDEN);
-		}
 		Optional<WishList> wishListOptional = wishListRepository.findById(wishListId);
 		if (wishListOptional.isPresent()) {
 			WishList wishList = wishListOptional.get();
@@ -80,14 +72,17 @@ public class WishListController {
 
 	}
 
-	@DeleteMapping(value = "/account/delete/{wishListId}")
+	@DeleteMapping(value = "/account/delete/{wishListId}/{accountId}")
 	public ResponseEntity<?> deleteWishList(@PathVariable("wishListId") Integer wishListId,
-											@RequestHeader("Authorization") String authorization) {
-		Account account = accountUtil.getAccount(BasicAuthenticationUtil.getCredentials(authorization));
-		Integer accountId = account.getId();
+											@PathVariable("accountId") Integer accountId) {
 		log.debug("delete the wishlistId with accountId {}",accountId);
+		Optional<Account> accountOptional = accountRepository.findById(accountId);
+		if(!accountOptional.isPresent()){
+			return new ResponseEntity<>("Account Not Found With Id "+accountId,HttpStatus.NOT_FOUND);
+		}
 		Optional<WishList> wishListFromDB = wishListRepository.findById(wishListId);
 		if (wishListFromDB.isPresent()) {
+			Account account = accountOptional.get();
 			List<WishList> wishList = account.getWishList();
 			wishList.remove(wishList.stream().filter(wish -> wish.getWishId() == wishListId)
 					.collect(Collectors.toList()).get(0));
@@ -98,14 +93,13 @@ public class WishListController {
 		}
 		return new ResponseEntity<>("WishList Not Found With Id " + wishListId, HttpStatus.NOT_FOUND);
 	}
-	@GetMapping("/account/getWishList")
-	public ResponseEntity<?> getWishList(@RequestHeader("Authorization") String authorization){
-		Account account = accountUtil.getAccount(BasicAuthenticationUtil.getCredentials(authorization));
-		Integer accountId = account.getId();
-		if(account != null){
-           return new ResponseEntity<>(account.getWishList(),HttpStatus.OK);
+	@GetMapping("/account/getWishList/{accountId}")
+	public ResponseEntity<?> getWishList(@PathVariable("accountId") Integer accountId){
+		Optional<Account> account = accountRepository.findById(accountId);
+		if(account.isPresent()){
+			return new ResponseEntity<>(account.get().getWishList(),HttpStatus.OK);
 		}
-		return new ResponseEntity<>("Account Not Found With id "+accountId,HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>("Account Not Found With Id "+accountId,HttpStatus.OK);
 	}
 
 }

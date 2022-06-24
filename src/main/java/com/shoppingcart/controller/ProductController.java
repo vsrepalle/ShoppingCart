@@ -143,7 +143,7 @@ public class ProductController {
             return new ResponseEntity<>("Product rating Updated Successfully", HttpStatus.OK);
         }
         log.error("Product Not Found With Id " + productId);
-        return new ResponseEntity<>("Product Not Found With Id " + productId, HttpStatus.OK);
+        return new ResponseEntity<>("Product Not Found With Id " + productId, HttpStatus.EXPECTATION_FAILED);
     }
 
 
