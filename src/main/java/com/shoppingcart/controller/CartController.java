@@ -67,16 +67,16 @@ public class CartController {
 		}
 	}
 
-	@PutMapping(value = "/{accountId}/cart/products/{productId}")
+	@PutMapping(value = "/{cartId}/cart/products/{productId}")
 	public ResponseEntity<?> updateProductQuantityInCart(
-			@PathVariable("accountId") int accountId,
+			@PathVariable("cartId") int cartId,
 			@PathVariable("productId") int productId,
 			@RequestParam int quantity){
-		log.debug("update the product quantityInCart with accountId"+accountId+" and productId "+productId+" and quantity"+quantity);
+		log.debug("update the product quantityInCart with cartId "+cartId+" and productId "+productId+" and quantity"+quantity);
 		try {
 			shoppingCartService.checkProduct(productId);
 			log.debug("checking the product with productId "+productId);
-			Cart cart = shoppingCartService.updateProductQuantityInCart(accountId, productId, quantity);
+			Cart cart = shoppingCartService.updateProductQuantityInCart(cartId, productId, quantity);
 			log.debug("Successfully updated by productQuantity in cart");
 			return new ResponseEntity<>(cart, HttpStatus.ACCEPTED);
 		} catch(Exception e) {
@@ -84,15 +84,15 @@ public class CartController {
 	return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
 		}
 	}
-	@DeleteMapping(value = "/{accountId}/cart/products")
+	@DeleteMapping(value = "/{cartId}/cart/products")
 	public ResponseEntity<?> removeProductFromCart(
-			@PathVariable("accountId") int accountId,
+			@PathVariable("accountId") int cartId,
 			@RequestParam int productId){
-		log.debug("deleting product's in cart with accountId "+accountId+" and productId "+productId);
+		log.debug("deleting product's in cart with accountId "+cartId+" and productId "+productId);
 		try {
 			shoppingCartService.checkProduct(productId);
 			log.debug("checking the product in cart with productId "+productId);
-			Cart cart = shoppingCartService.removeProductFromCart(accountId, productId);
+			Cart cart = shoppingCartService.removeProductFromCart(cartId, productId);
 			log.debug("Successfully deleted product from cart");
 			return new ResponseEntity<>(cart, HttpStatus.OK);
 		} catch(Exception e) {

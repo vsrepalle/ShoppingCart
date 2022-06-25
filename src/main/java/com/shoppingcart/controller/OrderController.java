@@ -94,14 +94,17 @@ public class OrderController {
 		List<Order> orders = orderRepository.findAll();
 		orders=orders.stream().filter(order -> {
 			Date orderDate = order.getOrderedDate();
-			Date now = new Date();
-			long difference_In_Time
-					= orderDate.getTime() - now.getTime();
-			long difference_In_Days
-					= (difference_In_Time
-					/ (1000 * 60 * 60 * 24))
-					% 365;
-			return order.getOrderStatus().equals("PENDING") && difference_In_Days <= 2;
+			if(orderDate != null){
+				Date now = new Date();
+				long difference_In_Time
+						= orderDate.getTime() - now.getTime();
+				long difference_In_Days
+						= (difference_In_Time
+						/ (1000 * 60 * 60 * 24))
+						% 365;
+				return order.getOrderStatus().equals("PENDING") && difference_In_Days <= 2;
+			}
+			return false;
 		}).collect(Collectors.toList());
 		List<OrderDTO> orderDTOList = orders.stream()
 				.map(order -> {
